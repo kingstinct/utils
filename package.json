@@ -1,9 +1,10 @@
 {
-  "name": "utils",
-  "version": "1.0.0",
+  "name": "@kingstinct/utils",
+  "version": "0.0.1",
   "main": "lib/index.js",
   "author": "Robert Herber",
   "license": "MIT",
+  "files": [ "lib" ],
   "scripts": {
     "build": " rimraf lib && tsc --declaration -p ./tsconfig.build.json",
     "test": "jest"
