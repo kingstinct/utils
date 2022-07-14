@@ -1,6 +1,6 @@
 {
   "name": "@kingstinct/utils",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "main": "lib/index.js",
   "author": "Robert Herber",
   "license": "MIT",
