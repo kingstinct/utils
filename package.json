@@ -5,10 +5,11 @@
   "author": "Robert Herber",
   "license": "MIT",
   "files": [
-    "lib"
+    "lib",
+    "node"
   ],
   "scripts": {
-    "build": " rimraf lib && tsc --declaration -p ./tsconfig.build.json",
+    "build": "rimraf lib && tsc --declaration -p ./tsconfig.build.json && tsc --declaration -p ./tsconfig.build-node.json",
     "test": "jest"
   },
   "devDependencies": {
