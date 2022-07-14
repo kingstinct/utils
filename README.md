@@ -12,7 +12,12 @@ There are two main imports, one generic and one for some node-specific stuff:
 You can also import utilities directly:
 `import wait from '@kingstinct/utils/lib/wait'`
 
-The goal of this library is to:
+The goal of this library (and the related [@kingstinct/react](https://github.com/Kingstinct/react)) is to:
 - Keep the number of dependencies in projects down
-- Have a common place to put useful utilities, so we can maintain them in one place
+- Have a common place to put useful utilities, so they're easier to maintain and find
 - Quickly get up and running with new projects
+
+We believe this is a better approach than the alternatives:
+- Using one single utility library for everything, which would introduce unnecessary dependencies
+- Using lots of micro-libs. Micro-libs does have it's advantages, but is harder to maintain and means loosing oversight of the dependencies in a project.
+- Copy pasting between projects :)
