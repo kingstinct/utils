@@ -1,4 +1,4 @@
-const OBJECT = {}
+const OBJECT: Record<string, unknown> = {}
 
 const ARRAY: readonly unknown[] = []
 
