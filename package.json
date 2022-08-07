@@ -10,7 +10,10 @@
   ],
   "scripts": {
     "build": "rimraf lib && tsc --declaration -p ./tsconfig.build.json && tsc --declaration -p ./tsconfig.build-node.json",
-    "test": "jest"
+    "test": "concurrently \"yarn test-only\" \"yarn lint\" \"tsc --noEmit\"",
+    "test-only": "jest",
+    "lint": "eslint .",
+    "prepublishOnly": "concurrently \"yarn build\" \"yarn test\""
   },
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "^3.10.6",
@@ -18,10 +21,12 @@
     "@types/jest": "27",
     "@typescript-eslint/eslint-plugin": "^5.30.6",
     "@typescript-eslint/parser": "^5.30.6",
+    "concurrently": "^7.3.0",
     "eslint": "^8.19.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-kingstinct": "^5.0.23",
     "eslint-import-resolver-typescript": "^3.2.5",
+    "eslint-plugin-comment-length": "^0.6.2",
     "eslint-plugin-functional": "^4.2.1",
     "eslint-plugin-import": "^2.26.0",
     "eslint-plugin-jest": "^26.5.3",

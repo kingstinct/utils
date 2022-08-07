@@ -1,6 +1,6 @@
 {
   "extends": ["eslint-config-kingstinct"],
-  "ignorePatterns": ["lib"],
+  "ignorePatterns": ["lib", "/node"],
   "rules": {
     "import/no-extraneous-dependencies": 0
   }

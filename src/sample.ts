@@ -1,4 +1,4 @@
-function sample<T>(arr: T[]): T | undefined {
+function sample<T>(arr: readonly T[]): T | undefined {
   if (arr.length === 0) {
     return undefined
   }
