@@ -1,3 +1,6 @@
+import Path from 'path'
+import Url from 'url'
+
 import type { FastifyInstance } from 'fastify'
 
 const addRedirectToAppRoutes = (app: FastifyInstance) => {
@@ -28,6 +31,21 @@ const addRedirectToAppRoutes = (app: FastifyInstance) => {
   })
 }
 
-export const getUrlForApp = (baseUrlToSelf: string, scheme: string, path?: string) => `${baseUrlToSelf}/${scheme}${path ? `/${path}` : ''}`
+export const getRedirectUrl = (baseUrlToSelf: string, redirectUrlToAppOrWeb: string) => {
+  const url = new Url.URL(baseUrlToSelf)
+
+  const [scheme, path] = redirectUrlToAppOrWeb.split('://')
+
+  if (!scheme) {
+    throw new Error('redirectUrl must have a scheme specified')
+  }
+
+  if (scheme?.startsWith('http')) {
+    return redirectUrlToAppOrWeb
+  }
+  // eslint-disable-next-line functional/immutable-data
+  url.pathname = Path.join('redirect-to-app', scheme, path || '')
+  return url.toString()
+}
 
 export default addRedirectToAppRoutes
