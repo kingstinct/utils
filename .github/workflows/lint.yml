@@ -6,23 +6,23 @@ on:
   workflow_dispatch:
     inputs:
       lint_command:
-        required: false
+        required: true
         type: string
         default: pnpm lint-only
         description: The command for running lint
       package_manager:
-        required: false
+        required: true
         type: string
         default: pnpm
         description: The package manager to use
   workflow_call:
     inputs:
       lint_command:
-        required: false
+        required: true
         type: string
         default: pnpm lint-only
       package_manager:
-        required: false
+        required: true
         type: string
         default: pnpm
 
