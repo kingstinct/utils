@@ -53,5 +53,5 @@ jobs:
         id: install
         run: ${{ inputs.package_manager }} install
 
-      - name: Lint
+      - name: Typecheck
         run: ${{ inputs.typecheck_command }}
