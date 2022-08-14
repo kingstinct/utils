@@ -10,17 +10,18 @@
   ],
   "scripts": {
     "build": "rimraf lib && tsc --declaration -p ./tsconfig.build.json && tsc --declaration -p ./tsconfig.build-node.json",
-    "test": "concurrently \"yarn test-only\" \"yarn lint\" \"tsc --noEmit\"",
+    "test": "concurrently \"pnpm test-only\" \"pnpm lint\" \"tsc --noEmit\"",
     "test-only": "jest",
     "lint-only": "eslint .",
     "typecheck": "tsc --noEmit",
-    "lint": "concurrently \"yarn lint-only\" \"yarn typecheck\"",
-    "prepublishOnly": "concurrently \"yarn build\" \"yarn test\"",
+    "lint": "concurrently \"pnpm lint-only\" \"pnpm typecheck\"",
+    "prepublishOnly": "concurrently \"pnpm build\" \"pnpm test\"",
     "act-lint": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/lint.yml --reuse -e act-workflow-run-configs/lint.json",
     "act-typecheck": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/typecheck.yml --reuse -e act-workflow-run-configs/typecheck.json",
     "act-test-in-parallel": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/test-in-parallel.yml --reuse -e act-workflow-run-configs/test-in-parallel.json",
     "act-build-for-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/build-for-heroku.yml --reuse -e act-workflow-run-configs/build-for-heroku.json --secret-file .secrets",
-    "act-deploy-to-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/deploy-to-heroku.yml --reuse -e act-workflow-run-configs/deploy-to-heroku.json --secret-file .secrets"
+    "act-deploy-to-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/deploy-to-heroku.yml --reuse -e act-workflow-run-configs/deploy-to-heroku.json --secret-file .secrets",
+    "prepare": "husky install"
   },
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "^3.10.6",
@@ -46,6 +47,7 @@
     "fastify": "^4.4.0",
     "graphql": "^16.5.0",
     "graphql-fields": "^2.0.3",
+    "husky": "^8.0.1",
     "jest": "27",
     "mongodb": "^4.8.0",
     "rimraf": "^3.0.2",

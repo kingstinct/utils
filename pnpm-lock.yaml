@@ -24,6 +24,7 @@ specifiers:
   fastify: ^4.4.0
   graphql: ^16.5.0
   graphql-fields: ^2.0.3
+  husky: ^8.0.1
   jest: '27'
   mongodb: ^4.8.0
   rimraf: ^3.0.2
@@ -54,6 +55,7 @@ devDependencies:
   fastify: 4.4.0
   graphql: 16.5.0
   graphql-fields: 2.0.3
+  husky: 8.0.1
   jest: 27.5.1
   mongodb: 4.8.1
   rimraf: 3.0.2
@@ -2986,6 +2988,12 @@ packages:
   /human-signals/2.1.0:
     resolution: {integrity: sha512-B4FFZ6q/T2jhhksgkbEW3HBvWIfDW85snkQgawt07S7J5QXTk6BkNV+0yAeZrM5QpMAdYlocGoljn0sJ/WQkFw==}
     engines: {node: '>=10.17.0'}
+    dev: true
+
+  /husky/8.0.1:
+    resolution: {integrity: sha512-xs7/chUH/CKdOCs7Zy0Aev9e/dKOMZf3K1Az1nar3tzlv0jfqnYtu235bstsWTmXOR0EfINrPa97yy4Lz6RiKw==}
+    engines: {node: '>=14'}
+    hasBin: true
     dev: true
 
   /iconv-lite/0.4.24:
