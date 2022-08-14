@@ -4,11 +4,6 @@
   "main": "lib/index.js",
   "author": "Robert Herber",
   "license": "MIT",
-  "files": [
-    "lib",
-    "node",
-    "fastify"
-  ],
   "scripts": {
     "build": "rimraf node fastify && tsc -p ./tsconfig.build.json",
     "test": "concurrently \"pnpm test-only\" \"pnpm lint\" \"tsc --noEmit\"",
