@@ -43,16 +43,16 @@ function build<
 >(fieldsAskedFor: Record<GQLPath, object>, prependKey = '') {
   let localFields = {}
   Object.keys(fieldsAskedFor).forEach((key) => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (Object.keys(fieldsAskedFor[key] as object).length === 0) {
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line no-param-reassign, func-names, functional/immutable-data
       localFields[prependKey + key] = 1
     } else {
-      // eslint-disable-next-line
-    // @ts-ignore
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
       localFields = { ...localFields, ...build(fieldsAskedFor[key] as object, `${prependKey}${key}.`) }
     }
   })
@@ -69,11 +69,11 @@ export function handleExtraFields<
         allFields = Object.keys(fields)
 
   Object.keys(dependencies).forEach((path) => {
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     const ifAnyOfTheseExist = dependencies[path] as readonly string[]
     const setAndDeleteDependency = () => {
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line no-param-reassign, func-names, functional/immutable-data
       updatedFields[path] = 1
@@ -81,7 +81,7 @@ export function handleExtraFields<
         delete updatedFields[resolverName];
       }); */
     }
-    // eslint-disable-next-line
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     if (dependencies[path].length === 0) {
       setAndDeleteDependency()
@@ -106,7 +106,8 @@ function projectionFromGraphQLInfo<
   if (!info) {
     return null as TInfo extends GraphQLResolveInfo ? Projection<DbType> : null
   }
-  // eslint-disable-next-line
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   const fieldsAskedFor = graphqlFields(info, undefined, undefined) as Record<GQLPath, Record<string, unknown>>
   let fields = build(fieldsAskedFor)
@@ -116,12 +117,12 @@ function projectionFromGraphQLInfo<
       const matchingPrefix = prefixes.find((prefix) => field.startsWith(prefix))
       if (matchingPrefix) {
         const newPropName = field.replace(matchingPrefix, '')
-        // eslint-disable-next-line
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
         // eslint-disable-next-line no-param-reassign, func-names, functional/immutable-data
         fields[newPropName] = 1
       }
-      // eslint-disable-next-line
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       // eslint-disable-next-line no-param-reassign, func-names, functional/immutable-data
       delete fields[field]

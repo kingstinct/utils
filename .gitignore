@@ -1,4 +1,5 @@
 node_modules
-lib
-node
+/lib
+/node
 /yarn-error.log
+.secrets
