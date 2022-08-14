@@ -2,3 +2,7 @@ node_modules
 /lib
 /node
 .secrets
+/fastify
+
+/*.d.ts
+/*.js

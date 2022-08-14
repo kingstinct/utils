@@ -6,10 +6,11 @@
   "license": "MIT",
   "files": [
     "lib",
-    "node"
+    "node",
+    "fastify"
   ],
   "scripts": {
-    "build": "rimraf lib && tsc --declaration -p ./tsconfig.build.json && tsc --declaration -p ./tsconfig.build-node.json",
+    "build": "rimraf node fastify && tsc -p ./tsconfig.build.json",
     "test": "concurrently \"pnpm test-only\" \"pnpm lint\" \"tsc --noEmit\"",
     "test-only": "jest",
     "lint-only": "eslint .",
