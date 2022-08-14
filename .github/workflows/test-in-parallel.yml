@@ -9,31 +9,31 @@ on:
     inputs:
       parellelism_count:
         description: The number of test pipelines to run in parallel
-        required: true
+        required: false
         type: string
         default: "4"
       test_command:
-        required: true
+        required: false
         type: string
         default: npx jest
         description: The command to run in each test pipeline
       package_manager:
-        required: true
+        required: false
         type: string
         default: pnpm
         description: The package manager to use
   workflow_call:
     inputs:
       parellelism_count:
-        required: true
+        required: false
         type: number
         default: 4
       test_command:
-        required: true
+        required: false
         type: string
         default: npx jest
       package_manager:
-        required: true
+        required: false
         type: string
         default: pnpm
 

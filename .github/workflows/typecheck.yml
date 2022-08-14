@@ -6,23 +6,23 @@ on:
   workflow_dispatch:
     inputs:
       typecheck_command:
-        required: true
+        required: false
         description: The command for running typechecks
         type: string
         default: tsc --noEmit
       package_manager:
-        required: true
+        required: false
         description: The package manager to use
         type: string
         default: pnpm
   workflow_call:
     inputs:
       typecheck_command:
-        required: true
+        required: false
         type: string
         default: tsc --noEmit
       package_manager:
-        required: true
+        required: false
         type: string
         default: pnpm
 
