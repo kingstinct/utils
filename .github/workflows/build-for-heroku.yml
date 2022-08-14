@@ -59,8 +59,8 @@ jobs:
       - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          heroku_app_name: ${{ github.event.inputs.heroku_app_name }} # Must be unique in Heroku
-          heroku_email: ${{ github.event.inputs.heroku_email }}
+          heroku_app_name: ${{ inputs.heroku_app_name }} # Must be unique in Heroku
+          heroku_email: ${{ inputs.heroku_email }}
           justlogin: true
 
       - name: Login to Heroku Container registry
@@ -69,4 +69,4 @@ jobs:
         run: heroku container:login
 
       - name: Build and push Docker image to registry
-        run: heroku container:push ${{ github.event.inputs.heroku_process_types }} -a ${{ github.event.inputs.heroku_app_name }}
+        run: heroku container:push ${{ inputs.heroku_process_types }} -a ${{ inputs.heroku_app_name }}

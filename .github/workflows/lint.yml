@@ -34,7 +34,7 @@ jobs:
         id: checkout
 
       - uses: pnpm/action-setup@v2.2.2
-        if: ${{ github.event.inputs.package_manager == 'pnpm' }}
+        if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: 7
 
@@ -47,10 +47,10 @@ jobs:
         if: ${{ !env.ACT }}
         with:
           node-version-file: .nvmrc
-          cache: ${{ github.event.inputs.package_manager }}
+          cache: ${{ inputs.package_manager }}
 
       - name: Install deps
-        run: ${{ github.event.inputs.package_manager }} install
+        run: ${{ inputs.package_manager }} install
 
       - name: Lint
-        run: ${{ github.event.inputs.lint_command }}
+        run: ${{ inputs.lint_command }}
