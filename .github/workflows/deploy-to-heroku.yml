@@ -17,7 +17,7 @@ on:
         description: The email address to use when creating a new Heroku app
       heroku_process_types:
         type: string
-        required: true
+        required: false
         default: web
         description: The process types to deploy
     secrets:
@@ -33,7 +33,7 @@ on:
         required: true
       heroku_process_types:
         type: string
-        required: true
+        required: false
         default: web
         description: The process types to deploy
     secrets:

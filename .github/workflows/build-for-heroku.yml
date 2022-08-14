@@ -17,7 +17,7 @@ on:
         description: The email address of the Heroku user
       heroku_process_types:
         type: choice
-        required: true
+        required: false
         default: --recursive
         description: The process types to deploy
         options:
@@ -37,7 +37,7 @@ on:
         required: true
       heroku_process_types:
         type: string
-        required: true
+        required: false
         default: --recursive
         description: The process types to deploy
     secrets:
