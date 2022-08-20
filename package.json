@@ -17,7 +17,12 @@
     "act-test-in-parallel": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/test-in-parallel.yml --reuse -e act-workflow-run-configs/test-in-parallel.json",
     "act-build-for-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/build-for-heroku.yml --reuse -e act-workflow-run-configs/build-for-heroku.json --secret-file .secrets",
     "act-deploy-to-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/deploy-to-heroku.yml --reuse -e act-workflow-run-configs/deploy-to-heroku.json --secret-file .secrets",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "release": "release-it"
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
   },
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "^3.10.6",
@@ -46,6 +51,7 @@
     "husky": "^8.0.1",
     "jest": "27",
     "mongodb": "^4.8.0",
+    "release-it": "^15.3.0",
     "rimraf": "^3.0.2",
     "ts-jest": "27",
     "typescript": "^4.7.4"
