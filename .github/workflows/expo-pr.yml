@@ -1,0 +1,79 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Publish Expo Deploy Preview
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the main branch
+on:
+  workflow_call:
+    inputs:
+      expo_release_channel:
+        type: string
+        description: Your choice - typically something like "pr-9", should be a valid expo release channel name. Will be available as CUSTOM_NAME in app.config.js
+        required: true
+      app_scheme:
+        type: string
+        description: The scheme of the app you want to open, should be an Expo Development Client
+        required: true
+      expo_organisation_or_user_slug:
+        type: string
+        description: The organisation/user slug you're publishing to
+        required: true
+        default: kingstinct
+      expo_app_slug:
+        type: string
+        description: The app slug you're publishing to, should point to an Expo Development Client
+        required: true
+    secrets:
+      EXPO_TOKEN:
+        required: true
+        description: The Expo token to use for publishing
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  expo-publish-preview:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          cache: yarn
+          node-version-file: .nvmrc
+
+      - name: Expo GitHub Action
+        uses: expo/expo-github-action@v7
+        with:
+          # Your Expo username, for authentication.
+          token: ${{ secrets.EXPO_TOKEN }}
+          expo-version: latest
+          eas-version: latest
+          # If Expo should be stored in the GitHub Actions cache (can be true or false)
+          expo-cache: true # optional
+
+      - name: Install deps
+        run: yarn
+
+      # Runs a set of commands using the runners shell
+      - name: Publish
+        run: CUSTOM_NAME=${{ inputs.expo_release_channel }} expo publish --release-channel=${{ inputs.expo_release_channel }}
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_DEPLOY_ENV: ${{ inputs.expo_release_channel }}
+
+      - uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          recreate: true
+          message: |
+            Expo preview is ready for review, [it's available here](https://expo.dev/@${{ inputs.expo_organisation_or_user_slug }}/${{ inputs.expo_app_slug }}?serviceType=classic&distribution=expo-dev-client&releaseChannel=${{ inputs.expo_release_channel }}&scheme=exp%2B${{ inputs.app_scheme }})
+
+            Or just scan this QR code:
+            ![QR Preview](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=exp%2B${{ inputs.app_scheme }}%3A%2F%2Fexpo-development-client%2F%3Furl%3Dhttps%3A%2F%2Fexp.host%2F%40${{ inputs.expo_organisation_or_user_slug }}%2F${{ inputs.expo_app_slug }}%3Frelease-channel%3D${{ inputs.expo_release_channel }}).
