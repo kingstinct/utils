@@ -18,7 +18,7 @@ on:
       expo_organisation_or_user_slug:
         type: string
         description: The organisation/user slug you're publishing to
-        required: true
+        required: false
         default: kingstinct
       expo_app_slug:
         type: string
