@@ -7,6 +7,10 @@ name: EAS Build
 on:
   workflow_call:
     inputs:
+      env_inline:
+        type: string
+        description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
+        required: false
       platform:
         type: string
         description: ios or android
@@ -71,16 +75,16 @@ jobs:
         run: echo "HASH=`npx rn-native-hash hash`" >> $GITHUB_ENV
 
       - name: Matching Native Builds
-        run: echo "MATCHING_FINISHED_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
+        run: echo "MATCHING_FINISHED_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching In-Progress Builds
-        run: echo "MATCHING_IN_PROGRESS_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
+        run: echo "MATCHING_IN_PROGRESS_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching In-Queue Builds
-        run: echo "MATCHING_IN_QUEUE_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
+        run: echo "MATCHING_IN_QUEUE_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching New Builds
-        run: echo "MATCHING_NEW_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
+        run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: EAS Build
         id: eas-build
