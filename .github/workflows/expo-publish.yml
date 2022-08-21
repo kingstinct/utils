@@ -1,0 +1,66 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Expo Publish
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  workflow_call:
+    inputs:
+      env_inline:
+        type: string
+        description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
+        required: false
+      release_channel_suffix:
+        type: string
+        description: The suffix to add to the release channel name (will always be prefixed with rn-native-hash output)
+        required: false
+    secrets:
+      EXPO_TOKEN:
+        description: The Expo token to use for publishing
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  publish-expo:
+    # The type of runner that the job will run on
+    timeout-minutes: 20
+    runs-on: ubuntu-latest
+
+    env:
+      ACTIONS_ALLOW_UNSECURE_COMMANDS: true
+      EAS_BUILD_AUTOCOMMIT: 1
+      EXPO_DEBUG: 1
+      DEBUG: 1
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        id: checkout
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        id: setup
+        with:
+          cache: yarn
+          node-version-file: .nvmrc
+
+      - name: Install deps
+        id: install
+        run: yarn
+
+      - name: Expo GitHub Action
+        uses: expo/expo-github-action@v7
+        id: expo-init
+        with:
+          # Your Expo username, for authentication.
+          token: ${{ secrets.EXPO_TOKEN }}
+          # If Expo should be stored in the GitHub Actions cache (can be true or false)
+          expo-version: latest
+          eas-version: latest
+          expo-cache: true # optional
+
+      - name: Expo Publish
+        id: expo-publish
+        run: ${{ inputs.env_inline }} expo publish --release-channel=`npx rn-native-hash hash`${{ inputs.release_channel_suffix }}
