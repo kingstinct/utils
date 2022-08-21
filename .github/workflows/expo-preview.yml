@@ -11,10 +11,6 @@ on:
         type: string
         description: Your choice - typically something like "pr-9", should be a valid expo release channel name. Will be available as CUSTOM_NAME in app.config.js
         required: true
-      app_scheme:
-        type: string
-        description: The scheme of the app you want to open, should be an Expo Development Client
-        required: true
       expo_organisation_or_user_slug:
         type: string
         description: The organisation/user slug you're publishing to
@@ -73,7 +69,7 @@ jobs:
         with:
           recreate: true
           message: |
-            Expo preview is ready for review, [it's available here](https://expo.dev/@${{ inputs.expo_organisation_or_user_slug }}/${{ inputs.expo_app_slug }}?serviceType=classic&distribution=expo-dev-client&releaseChannel=${{ inputs.expo_release_channel }}&scheme=exp%2B${{ inputs.app_scheme }})
+            Expo preview is ready for review, [it's available here](https://expo.dev/@${{ inputs.expo_organisation_or_user_slug }}/${{ inputs.expo_app_slug }}?serviceType=classic&distribution=expo-dev-client&releaseChannel=${{ inputs.expo_release_channel }}&scheme=exp%2B${{ inputs.expo_app_slug }})
 
             Or just scan this QR code:
-            ![QR Preview](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=exp%2B${{ inputs.app_scheme }}%3A%2F%2Fexpo-development-client%2F%3Furl%3Dhttps%3A%2F%2Fexp.host%2F%40${{ inputs.expo_organisation_or_user_slug }}%2F${{ inputs.expo_app_slug }}%3Frelease-channel%3D${{ inputs.expo_release_channel }}).
+            ![QR Preview](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=exp%2B${{ inputs.expo_app_slug }}%3A%2F%2Fexpo-development-client%2F%3Furl%3Dhttps%3A%2F%2Fexp.host%2F%40${{ inputs.expo_organisation_or_user_slug }}%2F${{ inputs.expo_app_slug }}%3Frelease-channel%3D${{ inputs.expo_release_channel }}).
