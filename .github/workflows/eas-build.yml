@@ -1,0 +1,92 @@
+# This is a basic workflow to help you get started with Actions
+
+name: EAS Build
+
+# Controls when the action will run. Triggers the workflow on push or pull request
+# events but only for the master branch
+on:
+  workflow_call:
+    inputs:
+      platform:
+        type: string
+        description: ios or android
+        required: true
+      expo_organisation_or_user_slug:
+        type: string
+        description: The organisation/user slug you're publishing to
+        required: false
+        default: kingstinct
+      build_profile:
+        type: string
+        description: The build profile to use, staging or production for example
+        required: true
+      always_run:
+        type: boolean
+        description: Run even if there's a build with the same hash (finished or in progress)
+        required: false
+        default: false
+    secrets:
+      EXPO_TOKEN:
+        description: The Expo token to use for publishing
+        required: true
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  eas-build:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+    env:
+      EXPO_DEBUG: 1
+      DEBUG: 1
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v2
+        id: checkout
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        id: setup
+        with:
+          cache: yarn
+          node-version-file: .nvmrc
+
+      - name: Install deps
+        id: install
+        run: yarn
+
+      - name: Expo GitHub Action
+        uses: expo/expo-github-action@v7
+        id: expo-init
+        with:
+          # Your Expo username, for authentication.
+          token: ${{ secrets.EXPO_TOKEN }}
+          # If Expo should be stored in the GitHub Actions cache (can be true or false)
+          expo-version: latest
+          eas-version: latest
+          expo-cache: true # optional
+
+      - name: Get Hash
+        run: echo "HASH=`npx rn-native-hash hash`" >> $GITHUB_ENV
+
+      - name: Matching Native Builds
+        run: echo "MATCHING_FINISHED_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
+
+      - name: Matching In-Progress Builds
+        run: echo "MATCHING_IN_PROGRESS_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
+
+      - name: Matching In-Queue Builds
+        run: echo "MATCHING_IN_QUEUE_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
+
+      - name: Matching New Builds
+        run: echo "MATCHING_NEW_BUILDS=`npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
+
+      - name: EAS Build
+        id: eas-build
+        if: ${{ inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0) }}
+        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --no-wait --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+
+      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/builds/${{ env.BUILD_ID }}"
+        id: build-url
+        if: ${{ env.BUILD_ID }}
