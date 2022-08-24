@@ -27,7 +27,7 @@ on:
       package_manager:
         required: false
         type: string
-        default: pnpm
+        default: yarn
         description: The package manager to use
       pnpm_version:
         required: false
