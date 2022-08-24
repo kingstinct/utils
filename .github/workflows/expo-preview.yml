@@ -24,6 +24,16 @@ on:
         type: string
         description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
         required: false
+      package_manager:
+        required: false
+        type: string
+        default: pnpm
+        description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
     secrets:
       EXPO_TOKEN:
         required: true
@@ -46,11 +56,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
+      - uses: pnpm/action-setup@v2.2.2
+        if: ${{ inputs.package_manager == 'pnpm' }}
         with:
-          cache: yarn
+          version: ${{ inputs.pnpm_version }}
+
+      - uses: actions/setup-node@v2
+        with:
           node-version-file: .nvmrc
+          cache: ${{ inputs.package_manager }}
+
+      - name: Install dependencies
+        run: ${{ inputs.package_manager }} install
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@v7
@@ -62,8 +79,24 @@ jobs:
           # If Expo should be stored in the GitHub Actions cache (can be true or false)
           expo-cache: true # optional
 
-      - name: Install deps
-        run: yarn
+      - name: Find Metro cache
+        id: metro-cache-dir-path
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const os = require('os');
+            const path = require('path');
+            return path.join(os.tmpdir(), 'metro-cache');
+
+      - name: Restore Metro cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.metro-cache-dir-path.outputs.result }}
+          key: ${{ runner.os }}-metro-cache-${{ matrix.app }}-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-metro-cache-${{ matrix.app }}-${{ github.base_ref }}
+            ${{ runner.os }}-metro-cache-${{ matrix.app }}-
 
       # Runs a set of commands using the runners shell
       - name: Publish
@@ -79,4 +112,4 @@ jobs:
             Expo preview is ready for review, [it's available here](https://expo.dev/@${{ inputs.expo_organisation_or_user_slug }}/${{ inputs.expo_app_slug }}?serviceType=classic&distribution=expo-dev-client&releaseChannel=${{ inputs.expo_release_channel }}&scheme=exp%2B${{ inputs.expo_app_slug }})
 
             Or just scan this QR code:
-            ![QR Preview](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=exp%2B${{ inputs.expo_app_slug }}%3A%2F%2Fexpo-development-client%2F%3Furl%3Dhttps%3A%2F%2Fexp.host%2F%40${{ inputs.expo_organisation_or_user_slug }}%2F${{ inputs.expo_app_slug }}%3Frelease-channel%3D${{ inputs.expo_release_channel }}).
+            ![QR Preview](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=exp%2B${{ inputs.expo_app_slug }}%3A%2F%2Fexpo-development-client%2F%3Furl%3Dhttps%3A%2F%2Fexp.host%2F%40${{ inputs.expo_organisation_or_user_slug }}%2F${{ inputs.expo_app_slug }}%3Frelease-channel%3D${{ inputs.expo_release_channel }})

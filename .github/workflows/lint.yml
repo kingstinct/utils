@@ -15,6 +15,11 @@ on:
         type: string
         default: pnpm
         description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
   workflow_call:
     inputs:
       lint_command:
@@ -25,6 +30,12 @@ on:
         required: false
         type: string
         default: pnpm
+        description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
 
 jobs:
   lint:
@@ -36,7 +47,7 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
-          version: 7
+          version: ${{ inputs.pnpm_version }}
 
       - uses: actions/setup-node@v2
         if: ${{ env.ACT }}

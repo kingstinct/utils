@@ -24,9 +24,6 @@ on:
           - --recursive
           - web
           - web worker
-    secrets:
-      HEROKU_API_KEY:
-        required: true
   workflow_call:
     inputs:
       heroku_app_name:

@@ -22,6 +22,11 @@ on:
         type: string
         default: pnpm
         description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
   workflow_call:
     inputs:
       parellelism_count:
@@ -36,6 +41,11 @@ on:
         required: false
         type: string
         default: pnpm
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -54,7 +64,7 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
-          version: 7
+          version: ${{ inputs.pnpm_version }}
 
       - uses: actions/setup-node@v2
         if: ${{ env.ACT }}
@@ -93,7 +103,7 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
-          version: 7
+          version: ${{ inputs.pnpm_version }}
 
       - name: Setup Node
         uses: actions/setup-node@v2

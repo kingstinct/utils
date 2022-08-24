@@ -15,6 +15,16 @@ on:
         type: string
         description: The suffix to add to the release channel name (will always be prefixed with rn-native-hash output)
         required: false
+      package_manager:
+        required: false
+        type: string
+        default: pnpm
+        description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
     secrets:
       EXPO_TOKEN:
         description: The Expo token to use for publishing
@@ -39,16 +49,18 @@ jobs:
       - uses: actions/checkout@v2
         id: checkout
 
-      - name: Setup Node.js environment
-        uses: actions/setup-node@v2
-        id: setup
+      - uses: pnpm/action-setup@v2.2.2
+        if: ${{ inputs.package_manager == 'pnpm' }}
         with:
-          cache: yarn
-          node-version-file: .nvmrc
+          version: ${{ inputs.pnpm_version }}
 
-      - name: Install deps
-        id: install
-        run: yarn
+      - uses: actions/setup-node@v2
+        with:
+          node-version-file: .nvmrc
+          cache: ${{ inputs.package_manager }}
+
+      - name: Install dependencies
+        run: ${{ inputs.package_manager }} install
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@v7
@@ -60,6 +72,25 @@ jobs:
           expo-version: latest
           eas-version: latest
           expo-cache: true # optional
+
+      - name: Find Metro cache
+        id: metro-cache-dir-path
+        uses: actions/github-script@v4
+        with:
+          result-encoding: string
+          script: |
+            const os = require('os');
+            const path = require('path');
+            return path.join(os.tmpdir(), 'metro-cache');
+
+      - name: Restore Metro cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.metro-cache-dir-path.outputs.result }}
+          key: ${{ runner.os }}-metro-cache-${{ matrix.app }}-${{ github.ref }}
+          restore-keys: |
+            ${{ runner.os }}-metro-cache-${{ matrix.app }}-${{ github.base_ref }}
+            ${{ runner.os }}-metro-cache-${{ matrix.app }}-
 
       - name: Expo Publish
         id: expo-publish

@@ -11,6 +11,16 @@ on:
         default: https://master.web.schedulist.app/
         type: string
         required: false
+      package_manager:
+        required: false
+        type: string
+        default: pnpm
+        description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
     secrets:
       GITHUB_PAT:
         required: false
@@ -27,6 +37,16 @@ on:
         description: The repository where the tests are
         required: false
         type: string
+      package_manager:
+        required: false
+        type: string
+        default: pnpm
+        description: The package manager to use
+      pnpm_version:
+        required: false
+        type: string
+        default: "7"
+        description: If using pnpm - which version to use
 
 jobs:
   test:
@@ -35,16 +55,21 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
-          repository: Kingstinct/schedulist-app
+          repository: ${{ inputs.repository }}
           token: ${{ secrets.GITHUB_PAT }}
+
+      - uses: pnpm/action-setup@v2.2.2
+        if: ${{ inputs.package_manager == 'pnpm' }}
+        with:
+          version: ${{ inputs.pnpm_version }}
 
       - uses: actions/setup-node@v2
         with:
-          cache: yarn
           node-version-file: .nvmrc
+          cache: ${{ inputs.package_manager }}
 
       - name: Install dependencies
-        run: yarn
+        run: ${{ inputs.package_manager }} install
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
