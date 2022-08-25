@@ -49,7 +49,7 @@ on:
         description: If using pnpm - which version to use
 
 jobs:
-  test:
+  e2e:
     timeout-minutes: 10
     runs-on: ubuntu-latest
     steps:
