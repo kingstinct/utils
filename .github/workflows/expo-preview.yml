@@ -7,6 +7,11 @@ name: Publish Expo Deploy Preview
 on:
   workflow_call:
     inputs:
+      working_directory:
+        type: string
+        default: .
+        description: The working directory to run the workflow in.
+        required: false
       expo_release_channel:
         type: string
         description: Your choice - typically something like "pr-9", should be a valid expo release channel name. Will be available as CUSTOM_NAME in app.config.js
@@ -68,6 +73,7 @@ jobs:
 
       - name: Install dependencies
         run: ${{ inputs.package_manager }} install
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@v7
@@ -101,6 +107,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: Publish
         run: ${{ inputs.env_inline }} expo publish --release-channel=${{ inputs.expo_release_channel }}
+        working-directory: ${{ inputs.working_directory }}
         env:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_DEPLOY_ENV: ${{ inputs.expo_release_channel }}

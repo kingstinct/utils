@@ -7,6 +7,11 @@ name: Expo Publish
 on:
   workflow_call:
     inputs:
+      working_directory:
+        type: string
+        default: .
+        description: The working directory to run the workflow in.
+        required: false
       env_inline:
         type: string
         description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
@@ -61,6 +66,7 @@ jobs:
 
       - name: Install dependencies
         run: ${{ inputs.package_manager }} install
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@v7
@@ -94,4 +100,5 @@ jobs:
 
       - name: Expo Publish
         id: expo-publish
+        working-directory: ${{ inputs.working_directory }}
         run: ${{ inputs.env_inline }} expo publish --release-channel=`npx rn-native-hash hash`${{ inputs.release_channel_suffix }}

@@ -7,6 +7,11 @@ name: EAS Build
 on:
   workflow_call:
     inputs:
+      working_directory:
+        type: string
+        default: .
+        description: The working directory to run the workflow in.
+        required: false
       env_inline:
         type: string
         description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
@@ -71,6 +76,7 @@ jobs:
 
       - name: Install dependencies
         run: ${{ inputs.package_manager }} install
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
         uses: expo/expo-github-action@v7
@@ -84,24 +90,30 @@ jobs:
           expo-cache: true # optional
 
       - name: Get Hash
+        if: ${{ !inputs.always_run }}
         run: echo "HASH=`npx rn-native-hash hash`" >> $GITHUB_ENV
 
       - name: Matching Native Builds
+        if: ${{ !inputs.always_run }}
         run: echo "MATCHING_FINISHED_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching In-Progress Builds
+        if: ${{ !inputs.always_run }}
         run: echo "MATCHING_IN_PROGRESS_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching In-Queue Builds
+        if: ${{ !inputs.always_run }}
         run: echo "MATCHING_IN_QUEUE_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: Matching New Builds
+        if: ${{ !inputs.always_run }}
         run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
 
       - name: EAS Build
         id: eas-build
         if: ${{ inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0) }}
         run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --no-wait --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
 
       - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/builds/${{ env.BUILD_ID }}"
         id: build-url
