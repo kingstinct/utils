@@ -39,6 +39,10 @@ on:
         type: string
         default: yarn
         description: The package manager to use
+      checkout_ref:
+        required: false
+        type: string
+        description: The ref to checkout
       pnpm_version:
         required: false
         type: string
@@ -62,7 +66,12 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
-        id: checkout
+        if: ${{ !inputs.checkout_ref }}
+
+      - uses: actions/checkout@v2
+        if: ${{ inputs.checkout_ref }}
+        with:
+          ref: ${{ inputs.checkout_ref }}
 
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
