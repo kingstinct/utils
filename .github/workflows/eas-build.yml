@@ -126,7 +126,7 @@ jobs:
       - name: EAS Build
         id: eas-build
         if: ${{ inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0) }}
-        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --no-wait={{ inputs.no_wait }} --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --no-wait=${{ inputs.no_wait }} --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/builds/${{ env.BUILD_ID }}"
