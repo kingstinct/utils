@@ -1,5 +1,5 @@
 import * as EMPTY from './EMPTY'
-import isDefined from './isDefined'
+import isDefined from './isNotNullOrUndefined'
 import logPrettyData from './logPrettyData'
 import MapWithPartialMatch from './MapWithPartialMatch'
 import omitBy from './omitBy'
