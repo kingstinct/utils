@@ -6,7 +6,7 @@ import type { IdWithoutProjection, Key } from './createMongoDataLoader'
 import type { PartialWithId } from './types'
 import type { ObjectId } from 'mongodb'
 
-class DataLoaderNullable<V extends { readonly _id: ObjectId }, K extends Key<V>, C extends string> extends DataLoader<K, PartialWithId<V>, C> {
+export class DataLoaderNullable<V extends { readonly _id: ObjectId }, K extends Key<V>, C extends string> extends DataLoader<K, PartialWithId<V>, C> {
   async load<K2 extends K>(key: K2): Promise<K2 extends IdWithoutProjection ? Required<V> : V> {
     const val = await super.load(key)
 

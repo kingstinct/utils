@@ -21,7 +21,7 @@ export function parseEnvNumber<T extends number | undefined, TOptional extends b
     throw new Error(`Environment variable "${prop}" is required`)
   }
   try {
-    return parseInt(rawValue, 10)
+    return parseFloat(rawValue)
   } catch (e) {
     throw new Error(`Failed to parse environment variable "${prop}", expected number got "${rawValue}"`)
   }

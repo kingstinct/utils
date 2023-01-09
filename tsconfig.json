@@ -1,6 +1,3 @@
 {
-  "extends": "eslint-config-kingstinct/tsconfig.node16",
-  "compilerOptions": {
-    "target": "ES6"
-  }
+  "extends": "eslint-config-kingstinct/tsconfig.node16"
 }

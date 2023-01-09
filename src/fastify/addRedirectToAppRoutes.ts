@@ -3,7 +3,7 @@ import Url from 'url'
 
 import type { FastifyInstance } from 'fastify'
 
-const addRedirectToAppRoutes = (app: FastifyInstance) => {
+export const addRedirectToAppRoutes = (app: FastifyInstance) => {
   app.route({
     url: '/redirect-to-app/:appScheme/:path',
     method: 'GET',

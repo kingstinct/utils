@@ -1,34 +1,18 @@
-import * as EMPTY from './EMPTY'
 import isNotNullOrUndefined from './isNotNullOrUndefined'
-import logPrettyData from './logPrettyData'
-import logPrettyTable from './logPrettyTable'
-import MapWithPartialMatch from './MapWithPartialMatch'
-import omitBy from './omitBy'
-import partition from './partition'
-import pick from './pick'
-import pickBy from './pickyBy'
-import promisify from './promisify'
-import randomHexColor from './randomHexColor'
-import sample from './sample'
-import times from './times'
-import wait from './wait'
 
-const isDefined = isNotNullOrUndefined
+export * as EMPTY from './EMPTY'
+export * from './isNotNullOrUndefined'
+export * from './logPrettyData'
+export * from './logPrettyTable'
+export * from './MapWithPartialMatch'
+export * from './omitBy'
+export * from './partition'
+export * from './pick'
+export * from './pickyBy'
+export * from './promisify'
+export * from './randomHexColor'
+export * from './sample'
+export * from './times'
+export * from './wait'
 
-export {
-  EMPTY,
-  isDefined,
-  isNotNullOrUndefined,
-  logPrettyData,
-  logPrettyTable,
-  MapWithPartialMatch,
-  omitBy,
-  partition,
-  pick,
-  pickBy,
-  promisify,
-  randomHexColor,
-  sample,
-  times,
-  wait,
-}
+export const isDefined = isNotNullOrUndefined
