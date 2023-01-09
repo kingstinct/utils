@@ -1,7 +1,5 @@
-export * from './createMongoDataLoader'
 export * from './DataLoaderNullable'
 export * from './GraphQLObjectIdScalar'
-export * from './projectionFromGraphQLInfo'
 export * from './parseEnv'
 export * from './gravatar'
 export * from './types'
