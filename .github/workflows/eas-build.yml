@@ -39,11 +39,11 @@ on:
         type: string
         default: yarn
         description: The package manager to use
-      no_wait:
+      autosubmit:
         required: false
         type: boolean
-        default: true
-        description: Whether to wait for EAS to finish building
+        default: false
+        description: Autosubmit to AppStore/PlayStore
       checkout_ref:
         required: false
         type: string
@@ -57,6 +57,9 @@ on:
       EXPO_TOKEN:
         description: The Expo token to use for publishing
         required: true
+      EXPO_APPLE_APP_SPECIFIC_PASSWORD:
+        description: The Apple App Specific Password to use for publishing to AppStore
+        required: false
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
@@ -66,6 +69,7 @@ jobs:
     env:
       EXPO_DEBUG: 1
       DEBUG: 1
+      EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
@@ -122,14 +126,19 @@ jobs:
       - name: Matching New Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
+      
+      - name: create google-services.json
+        id: init-google-services-json
+        if: ${{ inputs.platform == 'android' && inputs.autosubmit }}
+        run: echo "${{ secrets.GOOGLE_SERVICES_JSON }}" > ./google-services.json
 
       - name: EAS Build
-        if: ${{ inputs.no_wait && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
-        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --no-wait --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+        if: ${{ inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - name: EAS Build
-        if: ${{ !inputs.no_wait && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        if: ${{ !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
         run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
