@@ -129,7 +129,7 @@ jobs:
       - name: Matching New Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
-      
+
       - name: create google-services.json
         id: init-google-services-json
         if: ${{ inputs.platform == 'android' && inputs.autosubmit }}
