@@ -58,7 +58,10 @@ on:
         description: The Expo token to use for publishing
         required: true
       EXPO_APPLE_APP_SPECIFIC_PASSWORD:
-        description: The Apple App Specific Password to use for publishing to AppStore
+        description: The Apple App Specific Password to use for publishing to AppStore (required for autosubmit)
+        required: false
+      GOOGLE_SERVICES_JSON:
+        description: The Google Services JSON to use for publishing to PlayStore (required for autosubmit)
         required: false
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
