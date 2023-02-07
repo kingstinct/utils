@@ -137,12 +137,16 @@ jobs:
 
       - name: EAS Build
         if: ${{ inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
-        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+        run: |
+          BUILD_ID=`set -e; npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - name: EAS Build
         if: ${{ !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
-        run: echo "BUILD_ID=`npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`" >> $GITHUB_ENV
+        run: |
+          BUILD_ID=`set -e; npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/builds/${{ env.BUILD_ID }}"
