@@ -8,7 +8,7 @@ on:
         required: false
         type: string
       PLAYWRIGHT_TEST_URL:
-        default: https://master.web.schedulist.app/
+        default: https://master.schedulist-app.pages.dev/
         type: string
         required: false
       package_manager:
@@ -29,7 +29,7 @@ on:
     inputs:
       PLAYWRIGHT_TEST_URL:
         description: URL to run playwright tests towards
-        default: https://master.web.schedulist.app/
+        default: https://master.schedulist-app.pages.dev/
         type: string
         required: false
       repository:
