@@ -47,13 +47,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v2.3.4
+      - uses: actions/checkout@v3.3.0
 
       - name: Install Heroku CLI
         if: ${{ env.ACT }}
         run: curl https://cli-assets.heroku.com/install-ubuntu.sh | sh
 
-      - uses: akhileshns/heroku-deploy@v3.12.12 # This is the action
+      - uses: akhileshns/heroku-deploy@v3.12.13 # This is the action
         with:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           heroku_app_name: ${{ inputs.heroku_app_name }} # Must be unique in Heroku
