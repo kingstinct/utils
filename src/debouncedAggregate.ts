@@ -1,11 +1,12 @@
 type Opts = {
-  maxItems?: number,
-  maxMs?: number,
+  readonly maxItems?: number,
+  readonly maxMs?: number,
 }
 
-function debouncedAggregate<T>(ms: number, fn: (items: T[]) => void, opts?: Opts) {
+function debouncedAggregate<T>(ms: number, fn: (items: readonly T[]) => void, opts?: Opts) {
   let timeout: NodeJS.Timeout | undefined
   let lastInit: number | undefined
+  // eslint-disable-next-line functional/prefer-readonly-type
   let items: T[] = []
 
   const executeAndReset = () => {
