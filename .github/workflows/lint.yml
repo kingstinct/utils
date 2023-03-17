@@ -41,7 +41,7 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         id: checkout
 
       - uses: pnpm/action-setup@v2.2.2
@@ -49,12 +49,12 @@ jobs:
         with:
           version: ${{ inputs.pnpm_version }}
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         if: ${{ env.ACT }}
         with:
           node-version-file: .nvmrc
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         if: ${{ !env.ACT }}
         with:
           node-version-file: .nvmrc

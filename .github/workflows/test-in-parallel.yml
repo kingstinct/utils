@@ -59,19 +59,19 @@ jobs:
       test-chunk-ids: ${{ steps['set-test-chunk-ids'].outputs['test-chunk-ids'] }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: ${{ inputs.pnpm_version }}
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         if: ${{ env.ACT }}
         with:
           node-version-file: .nvmrc
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         if: ${{ !env.ACT }}
         with:
           node-version-file: .nvmrc
@@ -98,7 +98,7 @@ jobs:
         chunk: ${{ fromJson(needs.setup.outputs['test-chunk-ids']) }}
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
 
       - uses: pnpm/action-setup@v2.2.2
         if: ${{ inputs.package_manager == 'pnpm' }}
@@ -106,13 +106,13 @@ jobs:
           version: ${{ inputs.pnpm_version }}
 
       - name: Setup Node
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         if: ${{ env.ACT }}
         with:
           node-version-file: .nvmrc
 
       - name: Setup Node and Cache
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v3
         if: ${{ !env.ACT }}
         with:
           node-version-file: .nvmrc

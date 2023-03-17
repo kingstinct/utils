@@ -21,6 +21,15 @@ on:
         type: string
         default: "7"
         description: If using pnpm - which version to use
+      shard_count:
+        required: false
+        type: number
+        default: 1
+        description: Number of shards to split the tests into
+      shard_index:
+        required: false
+        type: number
+        description: Which shard is this, starting from 1
     secrets:
       GITHUB_PAT:
         required: false
@@ -53,7 +62,7 @@ jobs:
     timeout-minutes: 20
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           repository: ${{ inputs.repository }}
           token: ${{ secrets.GITHUB_PAT }}
@@ -63,7 +72,7 @@ jobs:
         with:
           version: ${{ inputs.pnpm_version }}
 
-      - uses: actions/setup-node@v2
+      - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
@@ -75,7 +84,12 @@ jobs:
         run: npx playwright install --with-deps
 
       - name: Run Playwright tests
+        if: ${{ inputs.shard_count == 1 }}
         run: PLAYWRIGHT_TEST_URL=${{ inputs.PLAYWRIGHT_TEST_URL }} npx playwright test
+
+      - name: Run Playwright tests sharded
+        if: ${{ inputs.shard_count > 1 }}
+        run: PLAYWRIGHT_TEST_URL=${{ inputs.PLAYWRIGHT_TEST_URL }} npx playwright test --shard=${{ inputs.shard_index }}/${{ inputs.shard_count }}
 
       - uses: actions/upload-artifact@v2
         if: always()
