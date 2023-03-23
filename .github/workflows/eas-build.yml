@@ -113,7 +113,7 @@ jobs:
 
       - name: Get Hash
         if: ${{ !inputs.always_run }}
-        run: echo "HASH=`npx expo-native-dependency-hash hash`" >> $GITHUB_ENV
+        run: echo "HASH=`npx expo-native-dependency-hash hash --platform=${{ inputs.platform }}`" >> $GITHUB_ENV
 
       - name: Matching Native Builds
         if: ${{ !inputs.always_run }}
