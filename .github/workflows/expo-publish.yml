@@ -18,7 +18,7 @@ on:
         required: false
       release_channel_suffix:
         type: string
-        description: The suffix to add to the release channel name (will always be prefixed with rn-native-hash output)
+        description: The suffix to add to the release channel name (will always be prefixed with expo-native-dependency-hash output)
         required: false
       package_manager:
         required: false
@@ -101,4 +101,4 @@ jobs:
       - name: Expo Publish
         id: expo-publish
         working-directory: ${{ inputs.working_directory }}
-        run: ${{ inputs.env_inline }} expo publish --release-channel=`npx rn-native-hash hash`${{ inputs.release_channel_suffix }}
+        run: ${{ inputs.env_inline }} expo publish --release-channel=`npx expo-native-dependency-hash hash`${{ inputs.release_channel_suffix }}
