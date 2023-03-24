@@ -1,7 +1,7 @@
-import MapWithPartialMatch from '../MapWithPartialMatch'
 import DataLoaderNullable from './DataLoaderNullable'
 import NotFoundError from './errors/NotFoundError'
 import { handleExtraFields, removeDeepFields } from './projectionFromGraphQLInfo'
+import MapWithPartialMatch from '../MapWithPartialMatch'
 
 import type { Paths } from './projectionFromGraphQLInfo'
 import type { PartialWithId } from './types'
