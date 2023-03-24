@@ -20,6 +20,10 @@ on:
         type: string
         description: ios or android
         required: true
+      expo_app_slug:
+        type: string
+        description: The expo app slug
+        required: false
       expo_organisation_or_user_slug:
         type: string
         description: The organisation/user slug you're publishing to
@@ -150,6 +154,14 @@ jobs:
           echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
-      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/builds/${{ env.BUILD_ID }}"
+      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/projects/${{ inputs.expo_app_slug }}/builds/${{ env.BUILD_ID }}"
+        id: build-url-with-app-slug
+        if: ${{ env.BUILD_ID && inputs.expo_app_slug }}
+
+      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}"
         id: build-url
-        if: ${{ env.BUILD_ID }}
+        if: ${{ env.BUILD_ID && !inputs.expo_app_slug }}
+        
+      - name: Fail
+        run: exit 1
+        if: ${{ !env.BUILD_ID }}
