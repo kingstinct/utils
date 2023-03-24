@@ -82,6 +82,7 @@ jobs:
       EXPO_DEBUG: 1
       DEBUG: 1
       EAS_BUILD_AUTOCOMMIT: ${{ inputs.autosubmit }}
+      GOOGLE_SERVICE_ACCOUNT_KEY_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}
       EXPO_APPLE_APP_SPECIFIC_PASSWORD: ${{ secrets.EXPO_APPLE_APP_SPECIFIC_PASSWORD }}
 
     # Steps represent a sequence of tasks that will be executed as part of the job
@@ -142,7 +143,7 @@ jobs:
 
       - name: create google-services.json
         id: init-google-services-json
-        if: ${{ inputs.platform == 'android' && inputs.autosubmit && secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON  }}
+        if: ${{ inputs.platform == 'android' && inputs.autosubmit && env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON  }}
         run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ inputs.google_service_account_key_path }}
 
       - name: EAS Build
