@@ -37,7 +37,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "7"
+        default: "8"
         description: If using pnpm - which version to use
     secrets:
       EXPO_TOKEN:
@@ -61,7 +61,7 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: ${{ inputs.pnpm_version }}

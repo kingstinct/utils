@@ -19,7 +19,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "7"
+        default: "8"
         description: If using pnpm - which version to use
       shard_count:
         required: false
@@ -54,7 +54,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "7"
+        default: "8"
         description: If using pnpm - which version to use
 
 jobs:
@@ -67,7 +67,7 @@ jobs:
           repository: ${{ inputs.repository }}
           token: ${{ secrets.GITHUB_PAT }}
 
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: ${{ inputs.pnpm_version }}

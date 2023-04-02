@@ -9,7 +9,7 @@ on:
         required: false
         description: The command for running typechecks
         type: string
-        default: tsc --noEmit
+        default: npx tsc --noEmit
       package_manager:
         required: false
         description: The package manager to use
@@ -18,14 +18,14 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "7"
+        default: "8"
         description: If using pnpm - which version to use
   workflow_call:
     inputs:
       typecheck_command:
         required: false
         type: string
-        default: tsc --noEmit
+        default: npx tsc --noEmit
       package_manager:
         required: false
         type: string
@@ -33,7 +33,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "7"
+        default: "8"
         description: If using pnpm - which version to use
 
 jobs:
@@ -43,7 +43,7 @@ jobs:
       - uses: actions/checkout@v3
         id: checkout
 
-      - uses: pnpm/action-setup@v2.2.2
+      - uses: pnpm/action-setup@v2
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: ${{ inputs.pnpm_version }}
