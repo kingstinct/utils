@@ -2,5 +2,10 @@
   "extends": "eslint-config-kingstinct/tsconfig.node16",
   "compilerOptions": {
     "ignoreDeprecations": "5.0"
-  }
+  },
+  "exclude": [
+    "node_modules",
+    "node",
+    "fastify"
+  ]
 }
