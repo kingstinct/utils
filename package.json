@@ -46,6 +46,7 @@
     "eslint-plugin-unicorn": "^46.0.0",
     "eslint-plugin-yml": "^1.5.0",
     "fastify": "^4.15.0",
+    "fastify-plugin": "^4.5.0",
     "graphql": "^16.6.0",
     "graphql-fields": "^2.0.3",
     "husky": "^8.0.3",
