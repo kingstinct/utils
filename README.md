@@ -26,24 +26,24 @@ We believe this is a better approach than the alternatives:
 
 Timeoutify is a utility to handle timeouts making it easy to clean up resources when a timeout occurs, and it can also be aborted for other reasons (client disconnects for example). 
 
-The easiest way to use it is through the Fastify plugin:
+The easiest way to use it is through the Fastify plugin, and access it on from your request object:
   
   ```ts
   import fastify from 'fastify'
-  import timeoutify from '@kingstinct/utils/fastify/timeoutifyPlugin'
+  import { timeoutifyPlugin } from '@kingstinct/utils/fastify/timeoutifyPlugin'
   import mongodb from 'mongodb'
 
-  const app = fastify()
-  app.register(timeoutify, { timeout: 30000 }) // <- time out your request after 30 seconds
+  const fastifyServer = fastify()
+  fastifyServer.register(timeoutifyPlugin, { timeoutMS: 30000 }) // <- time out your request after 30 seconds
 
   const db = await mongodb.connect('mongodb://localhost:27017', { timeout: req.timeoutify.timeout })
 
-  app.get('/callSomeOtherApi', async (req, res) => {    
+  fastifyServer.get('/callSomeOtherApi', async (req, res) => {    
     const result = await fetch('https://api.slow.app', { signal: req.timeoutify.abortSignal });
     return result;
   })
 
-  app.get('/callMongoDb', async (req, res) => {    
+  fastifyServer.get('/callMongoDb', async (req, res) => {    
     const result = await req.timeoutify.runMongoOpWithTimeout(
       db.collection('users').find({})
     );
@@ -53,5 +53,5 @@ The easiest way to use it is through the Fastify plugin:
 This will take care of the following:
 - If the timeout (of 30s in this example) is hit a 504 response will be sent to the client.
 - If the client disconnects (ex: closes browser tab) a 499 response will be sent to the client.
-- If the request is aborted (by either a timeout or client disconnect) the fetch request will be aborted.
-- If the request times out the mongodb query will time out at the same time.
+- If the request is aborted (by either a timeout or client disconnect) the fetch request will be aborted. Works with any calls supporting AbortSignal.
+- If the request times out the MongoDB query will time out at the same time. This ensures that MongoDB queries are not left hogging resources.

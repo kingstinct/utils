@@ -23,7 +23,7 @@ export class Timeoutify {
 
   private readonly logger: Pick<Console, 'debug'>
 
-  private readonly handle: ReturnType<typeof setTimeout>
+  private readonly handle: ReturnType<typeof setTimeout> | undefined
 
   constructor({
     timeoutMS,
@@ -37,13 +37,15 @@ export class Timeoutify {
     this.statusInternal = TimeoutifyStatus.Running
     this.logger = logger
 
-    this.handle = setTimeout(() => {
-      logger.debug(`${this.logPrefix} setTimeout called`)
-      if (!this.abortController.signal.aborted) {
-        this.statusInternal = TimeoutifyStatus.TimedOut
-        this.abortController.abort()
-      }
-    }, timeoutMS)
+    if (timeoutMS > 0) {
+      this.handle = setTimeout(() => {
+        logger.debug(`${this.logPrefix} setTimeout called`)
+        if (!this.abortController.signal.aborted) {
+          this.statusInternal = TimeoutifyStatus.TimedOut
+          this.abortController.abort()
+        }
+      }, timeoutMS)
+    }
   }
 
   /**
@@ -105,6 +107,10 @@ export class Timeoutify {
     }
 
     throw new Error(`${this.logPrefix} runMongoOpWithTimeout: Timed out before query started`)
+  }
+
+  static noop() {
+    return new Timeoutify({ timeoutMS: 0 })
   }
 }
 
