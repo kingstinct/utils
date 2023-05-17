@@ -14,7 +14,5 @@ export * from './randomHexColor'
 export * from './sample'
 export * from './times'
 export * from './wait'
-export type * from './fastify'
-export type * from './node'
 
 export const isDefined = isNotNullOrUndefined

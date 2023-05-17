@@ -102,7 +102,9 @@ export class Timeoutify {
       throw new Error(`${this.logPrefix} runMongoOpWithTimeout: AbortSignal already aborted`)
     }
 
-    if (this.timeLeftMS > 0) {
+    const isNoop = this.timeoutMS <= 0
+
+    if (isNoop || this.timeLeftMS > 0) {
       return cursor.maxTimeMS(this.timeLeftMS).toArray()
     }
 
