@@ -1,6 +1,6 @@
 {
   "name": "@kingstinct/utils",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "main": "index.js",
   "author": "Robert Herber",
   "license": "MIT",
@@ -23,16 +23,6 @@
   "publishConfig": {
     "access": "public",
     "registry": "https://registry.npmjs.org/"
-  },
-  "typesVersions": {
-    ">=4.2": {
-      "*": [ "index.d.ts" ],
-      "node": [
-        "index.d.ts",
-        "node/index.d.ts",
-        "fastify/index.d.ts"
-      ]
-    }
   },
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "^3.18.0",

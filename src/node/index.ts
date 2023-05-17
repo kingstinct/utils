@@ -1,4 +1,3 @@
-export * from './DataLoaderNullableWithId'
 export * from './GraphQLObjectIdScalar'
 export * from './parseEnv'
 export * from './gravatar'
