@@ -5,10 +5,6 @@ import times from '../times'
 import wait from '../wait'
 
 describe('SuperDataLoader', () => {
-  beforeEach(() => {
-    jest.setTimeout(20000)
-  })
-
   it('should be called multiple times', async () => {
     const batchLoadFn = jest.fn((keys) => keys)
     const loader = createSuperDataLoader({ batchLoadFn })
@@ -65,6 +61,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with different keys', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, (i) => `hello${i}`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = (keys: readonly string[]) => keys
@@ -92,6 +90,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with different keys (async)', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, (i) => `hello${i}`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = async (keys: readonly string[]) => {
@@ -124,6 +124,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with different keys - warm cache', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, (i) => `hello${i}`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = (keys: readonly string[]) => keys
@@ -154,6 +156,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with different keys (async) - warm cache', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, (i) => `hello${i}`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = async (keys: readonly string[]) => {
@@ -190,6 +194,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with same keys', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, () => `hello`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = (keys: readonly string[]) => keys
@@ -217,6 +223,8 @@ describe('SuperDataLoader', () => {
   })
 
   it('Should be faster than normal dataloader with loadMany with same keys (async)', async () => {
+    jest.setTimeout(20000)
+
     const hello = times(1000000, () => `hello`)
     // eslint-disable-next-line unicorn/consistent-function-scoping
     const batchLoadFn = async (keys: readonly string[]) => {
