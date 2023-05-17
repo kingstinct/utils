@@ -6,6 +6,8 @@
   "exclude": [
     "node_modules",
     "node",
-    "fastify"
+    "fastify",
+    "node",
+    "index.d.ts"
   ]
 }

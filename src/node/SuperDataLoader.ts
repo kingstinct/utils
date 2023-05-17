@@ -13,43 +13,39 @@ function createSuperDataLoader<T, TKey = string>({
   cacheKeyFn,
 }: DataLoaderWithKeyFunction<T, TKey> | DataLoaderWithStringKey<T>) {
   const dataCache = new Map<string, T>()
-  const keysToResolveOnNextTickSet = new Map<string, TKey>()
-  let nextTickPromise: Promise<unknown> | undefined
+  const keysToResolveOnNextTickSet = new Map<string, { readonly key: TKey, readonly resolver:((val: PromiseLike<T> | T) => void), readonly promise: PromiseLike<T> | T}>()
 
-  const prepareNextTick = async () => new Promise((resolve) => {
-    process.nextTick(async () => {
-      const keys = Array.from(keysToResolveOnNextTickSet.values())
+  const prepareNextTick = () => process.nextTick(async () => {
+    const keys = Array.from(keysToResolveOnNextTickSet.values())
 
-      console.log(keys.length, 'keys.length')
+    const results = await batchLoadFn(
+      // @ts-expect-error this is already safe
+      keys.map((key) => key.key),
+    )
 
-      const results = await batchLoadFn(
-        // @ts-expect-error this is already safe
-        keys,
+    if (results.length !== keysToResolveOnNextTickSet.size) {
+      throw new Error('batchLoadFn error: returned array length has to be the same length as the keys length')
+    }
+
+    const iter = keysToResolveOnNextTickSet.keys()
+    // eslint-disable-next-line no-plusplus
+    for (let index = 0; index < results.length; index++) {
+      const value = results[index]!
+      dataCache.set(
+        iter.next().value!,
+        value,
       )
+      keys[index]?.resolver(value)
+    }
 
-      if (results.length !== keysToResolveOnNextTickSet.size) {
-        throw new Error('batchLoadFn error: returned array length has to be the same length as the keys length')
-      }
-
-      const iter = keysToResolveOnNextTickSet.keys()
-      // eslint-disable-next-line no-plusplus
-      for (let index = 0; index < results.length; index++) {
-        dataCache.set(
-          iter.next().value!,
-          results[index]!,
-        )
-      }
-
-      keysToResolveOnNextTickSet.clear()
-      resolve(undefined)
-    })
+    keysToResolveOnNextTickSet.clear()
   })
 
   const getKey = cacheKeyFn || ((key: TKey) => key as string)
 
   const loadMany = async (keys: readonly TKey[]) => Promise.all(keys.map(load))
 
-  const load = async (key: TKey) => {
+  const load = (key: TKey) => {
     const keyStr = getKey(key)
 
     const valueInCache = dataCache.get(keyStr)
@@ -59,14 +55,22 @@ function createSuperDataLoader<T, TKey = string>({
     }
 
     if (keysToResolveOnNextTickSet.size === 0) {
-      nextTickPromise = prepareNextTick()
+      void prepareNextTick()
     }
 
-    keysToResolveOnNextTickSet.set(keyStr, key)
+    const alreadyWaitingForKey = keysToResolveOnNextTickSet.get(keyStr)
 
-    await nextTickPromise
+    if (!alreadyWaitingForKey) {
+      // eslint-disable-next-line no-underscore-dangle
+      let _resolver: ((val: PromiseLike<T> | T) => void) = () => {}
+      const promise = new Promise<T>((resolver) => {
+        _resolver = resolver
+      })
+      keysToResolveOnNextTickSet.set(keyStr, { key, resolver: _resolver, promise })
+      return promise
+    }
 
-    return dataCache.get(keyStr)
+    return alreadyWaitingForKey.promise
   }
 
   const clear = (key: TKey) => {

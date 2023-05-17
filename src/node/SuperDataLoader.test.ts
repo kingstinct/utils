@@ -82,6 +82,8 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
+    console.log(`[different keys]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
+
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
 
@@ -112,6 +114,8 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
+    console.log(`[different keys (async)]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
+
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
 
@@ -140,8 +144,7 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
-    console.log(superDataLoaderTime, 'superDataLoaderTime')
-    console.log(dataloaderTime, 'dataloaderTime')
+    console.log(`[different keys - warm cache]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
 
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
@@ -177,8 +180,7 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
-    console.log(superDataLoaderTime, 'superDataLoaderTime')
-    console.log(dataloaderTime, 'dataloaderTime')
+    console.log(`[different keys - warm cache (async)]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
 
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
@@ -205,8 +207,7 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
-    console.log(superDataLoaderTime, 'superDataLoaderTime')
-    console.log(dataloaderTime, 'dataloaderTime')
+    console.log(`[same keys]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
 
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
@@ -238,8 +239,7 @@ describe('SuperDataLoader', () => {
     const end = performance.now()
     const dataloaderTime = end - start
 
-    console.log(superDataLoaderTime, 'superDataLoaderTime')
-    console.log(dataloaderTime, 'dataloaderTime')
+    console.log(`[same keys (async)]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
 
     expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
   })
