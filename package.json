@@ -1,6 +1,6 @@
 {
   "name": "@kingstinct/utils",
-  "version": "0.6.3",
+  "version": "0.6.4",
   "main": "index.js",
   "author": "Robert Herber",
   "license": "MIT",
@@ -26,11 +26,11 @@
   },
   "typesVersions": {
     ">=4.2": {
-      "*": [ "dist/index.d.ts" ],
+      "*": [ "index.d.ts" ],
       "node": [
-        "dist/index.d.ts",
-        "dist/node/index.d.ts",
-        "dist/fastify/index.d.ts"
+        "index.d.ts",
+        "node/index.d.ts",
+        "fastify/index.d.ts"
       ]
     }
   },
