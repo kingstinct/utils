@@ -8,7 +8,7 @@ type DataLoaderWithKeyFunction<T, TKey> = {
   readonly cacheKeyFn: (key: TKey) => string
 }
 
-function createSuperDataLoader<T, TKey = string>({
+export function createSuperDataLoader<T, TKey = string>({
   batchLoadFn,
   cacheKeyFn,
 }: DataLoaderWithKeyFunction<T, TKey> | DataLoaderWithStringKey<T>) {
