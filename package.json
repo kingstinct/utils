@@ -33,6 +33,7 @@
     "@typescript-eslint/parser": "^5.59.6",
     "concurrently": "^7.6.0",
     "dataloader": "^2.2.2",
+    "dayjs": "^1.11.7",
     "eslint": "^8.40.0",
     "eslint-config-airbnb-base": "^15.0.0",
     "eslint-config-kingstinct": "^5.1.1",
