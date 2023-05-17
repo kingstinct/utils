@@ -7,3 +7,5 @@ node_modules
 /*.d.ts
 /*.js
 .DS_Store
+
+/graphql
