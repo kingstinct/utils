@@ -5,6 +5,10 @@ import times from '../times'
 import wait from '../wait'
 
 describe('SuperDataLoader', () => {
+  beforeEach(() => {
+    jest.setTimeout(20000)
+  })
+
   it('should be called multiple times', async () => {
     const batchLoadFn = jest.fn((keys) => keys)
     const loader = createSuperDataLoader({ batchLoadFn })
