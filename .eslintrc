@@ -1,6 +1,6 @@
 {
   "extends": ["eslint-config-kingstinct"],
-  "ignorePatterns": ["lib", "/node"],
+  "ignorePatterns": ["lib", "/node", "/graphql"],
   "rules": {
     "import/no-extraneous-dependencies": 0
   }

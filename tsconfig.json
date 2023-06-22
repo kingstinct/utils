@@ -8,6 +8,7 @@
     "node",
     "fastify",
     "node",
-    "index.d.ts"
+    "index.d.ts",
+    "graphql"
   ]
 }

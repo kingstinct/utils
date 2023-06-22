@@ -25,6 +25,13 @@ type DbType = {
       }
     }
   },
+  readonly b: {
+    readonly very: {
+      readonly deep: {
+        readonly property: string
+      }
+    }
+  },
   readonly createdAt: string
 }
 
@@ -36,22 +43,23 @@ describe('projectionFromGraphQLInfo', () => {
   })
 
   test('Should add extra fields when array is empty', () => {
-    const projection = handleExtraFields<ResolverType, DbType>({ anotherProjection: 1 }, {
+    const projection = handleExtraFields<ResolverType, DbType>({ createdAt: 1 }, {
       importantToResolver: [],
     })
 
-    expect(projection).toEqual({ anotherProjection: 1, importantToResolver: 1 })
+    expect(projection).toEqual({ createdAt: 1, importantToResolver: 1 })
   })
 
   test('Should not add extra fields if dependency is not requested', () => {
-    const projection = handleExtraFields<ResolverType, DbType>({ anotherProjection: 1 }, {
+    const projection = handleExtraFields<ResolverType, DbType>({ _id: 1 }, {
       importantToResolver: ['createdAt'],
     })
 
-    expect(projection).toEqual({ anotherProjection: 1 })
+    expect(projection).toEqual({ _id: 1 })
   })
 
   test('Should add extra fields if dependency is requested', () => {
+    // @ts-expect-error lets fix this later
     const projection = handleExtraFields<ResolverType, DbType>({ 'b.very.deep.property': 1 }, {
       'a.very.deep.property': ['b.very.deep.property'],
     })

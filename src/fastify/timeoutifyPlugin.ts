@@ -52,6 +52,7 @@ export const timeoutifyPlugin = fastifyPlugin((
 
         await reply
           .status(statusCode)
+          .type('application/json')
           .send({
             data: null,
             errors: [errorText],

@@ -3,11 +3,11 @@ import NotFoundError from './errors/NotFoundError'
 import { handleExtraFields, removeDeepFields } from './projectionFromGraphQLInfo'
 import MapWithPartialMatch from '../MapWithPartialMatch'
 
-import type { Paths } from './projectionFromGraphQLInfo'
+import type { Paths, Projection } from './projectionFromGraphQLInfo'
 import type { PartialWithId } from './types'
 import type { BatchLoadFn } from 'dataloader'
 import type {
-  Collection, Document, EnhancedOmit, Filter, ObjectId, Projection, WithId,
+  Collection, Document, EnhancedOmit, Filter, ObjectId, WithId,
 } from 'mongodb'
 
 export type IdWithProjection<T extends Record<string, unknown> & {readonly _id: ObjectId}> = {

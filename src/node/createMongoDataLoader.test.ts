@@ -10,7 +10,12 @@ describe('MongoDataLoader', () => {
 
   test('cacheKeyFn should handle projections', () => {
     const objectId = new ObjectId()
-    expect(cacheKeyFn({ _id: objectId, projection: { myProjection: 1 } })).toEqual(`${objectId.toHexString()}#{"myProjection":1}`)
+    expect(cacheKeyFn<{ readonly _id: ObjectId, readonly myProjection: 1 }>({
+      _id: objectId,
+      projection: {
+        myProjection: 1,
+      },
+    })).toEqual(`${objectId.toHexString()}#{"myProjection":1}`)
   })
 
   test('Should include all projection properties', () => {

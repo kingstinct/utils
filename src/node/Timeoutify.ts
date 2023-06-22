@@ -1,4 +1,4 @@
-import type { AbstractCursor } from 'mongodb'
+import { FindCursor, AbstractCursor } from 'mongodb'
 
 export const LOG_PREFIX = '[Timeoutify]'
 
@@ -39,7 +39,7 @@ export class Timeoutify {
 
     if (timeoutMS > 0) {
       this.handle = setTimeout(() => {
-        logger.debug(`${this.logPrefix} setTimeout called`)
+        this.logger.debug(`${this.logPrefix} setTimeout called`)
         if (!this.abortController.signal.aborted) {
           this.statusInternal = TimeoutifyStatus.TimedOut
           this.abortController.abort()
@@ -79,7 +79,9 @@ export class Timeoutify {
       this.statusInternal = TimeoutifyStatus.Aborted
     }
     clearTimeout(this.handle)
-    this.abortController.abort()
+    if (!this.abortController.signal.aborted) {
+      this.abortController.abort()
+    }
     return this
   }
 
@@ -111,8 +113,21 @@ export class Timeoutify {
     throw new Error(`${this.logPrefix} runMongoOpWithTimeout: Timed out before query started`)
   }
 
+  static patchMongoCursorWithTimeout<T>(maxTimeMs: number) {
+    /* @ts-expect-error  This is a hack to get around the fact that the type definitions for MongoDB are wrong. */
+    // eslint-disable-next-line functional/immutable-data, no-underscore-dangle
+    AbstractCursor.prototype._toArray = AbstractCursor.prototype.toArray.bind(AbstractCursor.prototype)
+
+    // eslint-disable-next-line functional/immutable-data, @typescript-eslint/require-await
+    AbstractCursor.prototype.toArray = async function toArrayWithTimeoutify(this: AbstractCursor<T>) {
+      // @ts-expect-error dfgdfg
+      // eslint-disable-next-line no-underscore-dangle
+      return this.maxTimeMS(maxTimeMs)._toArray()
+    }
+  }
+
   static noop() {
-    return new Timeoutify({ timeoutMS: 0 })
+    return new Timeoutify({ timeoutMS: 0, logger: { debug: () => {} } })
   }
 }
 

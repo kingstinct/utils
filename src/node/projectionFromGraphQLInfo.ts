@@ -1,7 +1,12 @@
 import graphqlFields from 'graphql-fields'
 
 import type { GraphQLResolveInfo } from 'graphql'
-import type { Document, ObjectId, Projection } from 'mongodb'
+import type { Document, ObjectId, StrictFilter } from 'mongodb'
+
+// eslint-disable-next-line functional/prefer-readonly-type
+export type Projection<T> = {
+  [K in keyof StrictFilter<T>]?: 0 | 1;
+};
 
 type Join<K, P> = K extends number | string ?
   P extends number | string ?
