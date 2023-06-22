@@ -14,5 +14,9 @@ export * from './randomHexColor'
 export * from './sample'
 export * from './times'
 export * from './wait'
+export * from './createKeyMap'
+export * from './dateRange'
+export * from './universalDateTimeToDayjs'
+export * from './statHelpers'
 
 export const isDefined = isNotNullOrUndefined

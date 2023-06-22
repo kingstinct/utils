@@ -10,6 +10,8 @@ function* dateGenerator(from: string, to: string, includeFuture: boolean) {
   }
 }
 
-export default function dateRange(from: string, to: string, includeFuture = true) {
+export function dateRange(from: string, to: string, includeFuture = true) {
   return Array.from(dateGenerator(from, to, includeFuture))
 }
+
+export default dateRange
