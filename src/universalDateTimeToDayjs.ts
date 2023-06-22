@@ -2,22 +2,6 @@ import dayjs from 'dayjs'
 
 import type { Dayjs } from 'dayjs'
 
-// const dateToInterpreted = (date: Date | string, endOfDay = false) => {
-//   if (typeof date === 'string') {
-//     return dateStringOrTimestampToDayjs(date, endOfDay).toDate()
-//   }
-//   return date
-// }
-
-// export const dateStringOrTimestampToDayjs = (date: Date | string, endOfDay = false) => {
-//   if (typeof date === 'string') {
-//     const utcTime = dayjs(date).utc(true)
-//     const startOrEndOfDay = endOfDay ? utcTime.endOf('day') : utcTime.startOf('day')
-//     return startOrEndOfDay
-//   }
-//   return dayjs(date)
-// }
-
 type UniversalDateTimeInterpretation = 'endOfDay' | 'startOfDay'
 
 export const universalDateTimeToDayjs = (
@@ -33,6 +17,15 @@ export const universalDateTimeToDayjs = (
     return startOrEndOfDay
   }
   return universalDateTime
+}
+
+export const universalDateTimeToDateString = (
+  universalDateTime: Dayjs | string,
+): string => {
+  if (typeof universalDateTime === 'string') {
+    return universalDateTime
+  }
+  return universalDateTime.format('YYYY-MM-DD')
 }
 
 export const universalDateTimeToDate = (

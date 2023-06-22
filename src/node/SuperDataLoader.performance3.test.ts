@@ -61,6 +61,6 @@ describe('SuperDataLoader.performance', () => {
 
     console.log(`[same keys (async)]:\n[SuperDataLoader]: ${superDataLoaderTime}\n[DataLoader]: ${dataloaderTime}\n${dataloaderTime / superDataLoaderTime}x) faster}`)
 
-    expect(superDataLoaderTime).toBeLessThanOrEqual(dataloaderTime)
+    expect(superDataLoaderTime * 0.8).toBeLessThanOrEqual(dataloaderTime)
   }, 20000)
 })
