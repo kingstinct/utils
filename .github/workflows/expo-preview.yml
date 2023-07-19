@@ -76,7 +76,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
-        uses: expo/expo-github-action@v7
+        uses: expo/expo-github-action@v8
         with:
           # Your Expo username, for authentication.
           token: ${{ secrets.EXPO_TOKEN }}
