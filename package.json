@@ -18,7 +18,7 @@
     "act-build-for-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/build-for-heroku.yml --reuse -e act-workflow-run-configs/build-for-heroku.json --secret-file .secrets",
     "act-deploy-to-heroku": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/deploy-to-heroku.yml --reuse -e act-workflow-run-configs/deploy-to-heroku.json --secret-file .secrets",
     "prepare": "husky install",
-    "release": "release-it"
+    "release": "git pull --rebase && git push"
   },
   "publishConfig": {
     "access": "public",
@@ -61,7 +61,6 @@
     "jest": "^29.5.0",
     "lint-staged": "^13.2.3",
     "mongodb": "^5.6.0",
-    "release-it": "^15.10.3",
     "rimraf": "^4.4.1",
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4"
