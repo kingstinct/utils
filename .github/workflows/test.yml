@@ -10,11 +10,34 @@ on:
       - "**" # matches every branch
       - "!main" # matches no branches
   workflow_dispatch:
+  workflow_call:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  cache-warmer:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+    timeout-minutes: 4
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        id: setup
+        with:
+          cache: pnpm
+          node-version-file: .nvmrc
+
+      - name: Install deps
+        if: ${{ steps.setup.outputs.cache-hit != 'true' }}
+        run: pnpm install --frozen-lockfile
+
   test:
     uses: ./.github/workflows/test-in-parallel.yml
+    needs: cache-warmer
     with:
       parellelism_count: 2
       test_command: npx jest
@@ -22,6 +45,8 @@ jobs:
 
   lint:
     uses: ./.github/workflows/lint.yml
+    needs: cache-warmer
 
   typecheck:
     uses: ./.github/workflows/typecheck.yml
+    needs: cache-warmer

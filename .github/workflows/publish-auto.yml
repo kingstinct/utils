@@ -11,23 +11,14 @@ on:
 
 jobs:
   test:
-    uses: ./.github/workflows/test-in-parallel.yml
-    with:
-      parellelism_count: 2
-      test_command: npx jest
-      package_manager: pnpm
-
-  lint:
-    uses: ./.github/workflows/lint.yml
-
-  typecheck:
-    uses: ./.github/workflows/typecheck.yml
+    uses: ./.github/workflows/test.yml
 
   publish-to-npm:
-    needs: [ test, lint, typecheck ]
+    needs: [ test ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: pnpm/action-setup@v2
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
@@ -36,7 +27,7 @@ jobs:
       - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
       - run: git config user.email "$(git log -n 1 --pretty=format:%ae)"
       - run: echo "versionTag=`npm version patch -m "%s - autorelease"`" >> $GITHUB_ENV
-      - run: npm ci
+      - run: pnpm install --frozen-lockfile
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
