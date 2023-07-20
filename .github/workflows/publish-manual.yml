@@ -23,16 +23,7 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-      - run: npm ci
-      # - run: npm test
-      - run: npm run lint
-      - run: npm run typecheck
+    uses: ./.github/workflows/test.yml
 
   publish-to-npm:
     needs: test
@@ -43,6 +34,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
+          cache: pnpm
           registry-url: https://registry.npmjs.org/
           scope: "@kingstinct"
       - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
