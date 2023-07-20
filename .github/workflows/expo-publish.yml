@@ -65,7 +65,13 @@ jobs:
           cache: ${{ inputs.package_manager }}
 
       - name: Install dependencies
-        run: ${{ inputs.package_manager }} install
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
         working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action

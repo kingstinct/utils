@@ -60,8 +60,13 @@ jobs:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
 
-      - name: Install deps
-        run: ${{ inputs.package_manager }} install
+      - name: Install dependencies
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
 
       - name: Lint
         run: ${{ inputs.lint_command }}

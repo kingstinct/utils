@@ -78,7 +78,12 @@ jobs:
           cache: ${{ inputs.package_manager }}
 
       - name: Install dependencies
-        run: ${{ inputs.package_manager }} install
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
 
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps

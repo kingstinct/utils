@@ -107,7 +107,13 @@ jobs:
           cache: ${{ inputs.package_manager }}
 
       - name: Install dependencies
-        run: ${{ inputs.package_manager }} install
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
         working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
@@ -126,40 +132,22 @@ jobs:
         run: echo "HASH=`npx expo-native-dependency-hash hash --platform=${{ inputs.platform }}`" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
-      - name: Matching Native Builds
-        if: ${{ !inputs.always_run }}
-        run: echo "MATCHING_FINISHED_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
-
-      - name: Matching In-Progress Builds
-        if: ${{ !inputs.always_run }}
-        run: echo "MATCHING_IN_PROGRESS_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
-
-      - name: Matching In-Queue Builds
-        if: ${{ !inputs.always_run }}
-        run: echo "MATCHING_IN_QUEUE_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
-
-      - name: Matching New Builds
-        if: ${{ !inputs.always_run }}
-        run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
-
       - name: create google-services.json
         id: init-google-services-json
         if: ${{ inputs.platform == 'android' && inputs.autosubmit && env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON  }}
         run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ inputs.google_service_account_key_path }}
 
-      - run: echo `git diff`
-
       - name: EAS Build
         if: ${{ inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
         run: |
-          BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --local --json | jq ".[].id"`
           echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - name: EAS Build
         if: ${{ !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
         run: |
-          BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --local --json | jq ".[].id"`
           echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 

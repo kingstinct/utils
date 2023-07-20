@@ -77,7 +77,13 @@ jobs:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
 
-      - run: ${{ inputs.package_manager }} install
+      - name: Install dependencies
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
 
       - id: set-test-chunks
         name: Set Chunks
@@ -118,8 +124,13 @@ jobs:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
 
-      - name: Install
-        run: ${{ inputs.package_manager }} install
+      - name: Install dependencies
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' }}
+
+      - name: Install dependencies
+        run: npm ci
+        if: ${{ inputs.package_manager == 'npm' }}
 
       - name: Test
         run: echo $CHUNKS | jq '.[${{ matrix.chunk }}] | .[] | @text' | xargs ${{ inputs.test_command }}
