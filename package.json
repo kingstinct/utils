@@ -28,7 +28,8 @@
     "*.ts": "eslint --fix",
     "*.js": "eslint --fix",
     "*.json": "eslint --fix",
-    "*.graphql": "eslint --fix"
+    "*.graphql": "eslint --fix",
+    "*.yml": "eslint --fix"
   },
   "devDependencies": {
     "@graphql-eslint/eslint-plugin": "^3.18.0",

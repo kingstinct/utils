@@ -11,19 +11,20 @@ on:
 
 jobs:
   test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
-        with:
-          node-version-file: .nvmrc
-      - run: npm ci
-      # - run: npm test
-      - run: npm run lint
-      - run: npm run typecheck
+    uses: ./.github/workflows/test-in-parallel.yml
+    with:
+      parellelism_count: 2
+      test_command: npx jest
+      package_manager: pnpm
+
+  lint:
+    uses: ./.github/workflows/lint.yml
+
+  typecheck:
+    uses: ./.github/workflows/typecheck.yml
 
   publish-to-npm:
-    needs: test
+    needs: [ test, lint, typecheck ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
