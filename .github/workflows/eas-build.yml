@@ -129,25 +129,27 @@ jobs:
       - name: Matching Native Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_FINISHED_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=finished | grep -c $HASH`" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Matching In-Progress Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_IN_PROGRESS_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-progress | grep -c $HASH`" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Matching In-Queue Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_IN_QUEUE_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=in-queue | grep -c $HASH`" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
 
       - name: Matching New Builds
         if: ${{ !inputs.always_run }}
         run: echo "MATCHING_NEW_BUILDS=`${{ inputs.env_inline }} npx eas-cli@latest build:list --buildProfile=${{ inputs.build_profile }} --platform=${{ inputs.platform }} --status=new | grep -c $HASH`" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
 
       - name: create google-services.json
         id: init-google-services-json
         if: ${{ inputs.platform == 'android' && inputs.autosubmit && env.GOOGLE_SERVICE_ACCOUNT_KEY_JSON  }}
         run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ inputs.google_service_account_key_path }}
-
-      - run: echo `git diff`
 
       - name: EAS Build
         if: ${{ inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}

@@ -8,18 +8,18 @@ on:
   workflow_dispatch:
     inputs:
       description:
-        description: 'Description'
+        description: Description
         required: false
         type: string
       release_type:
-        description: 'Release Type'
+        description: Release Type
         required: true
-        default: 'patch'
+        default: patch
         type: choice
         options:
-          - 'patch'
-          - 'minor'
-          - 'major'
+          - patch
+          - minor
+          - major
 
 jobs:
   test:
@@ -43,7 +43,7 @@ jobs:
         with:
           node-version-file: .nvmrc
           registry-url: https://registry.npmjs.org/
-          scope: '@kingstinct'
+          scope: "@kingstinct"
       - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
       - run: git config user.email "$(git log -n 1 --pretty=format:%ae)"
       - run: echo "versionTag=`npm version ${{ github.event.inputs.release_type }} -m "%s ${{ github.event.inputs.description }}"`" >> $GITHUB_ENV
