@@ -12,9 +12,11 @@ export function isValidMongoDBObjectID(_id: string): boolean {
   const id = `${_id}`
   const len = id.length
   let valid = false
+
   if (len === 12 || len === 24) {
     valid = mongodbObjectIdRegex.test(id)
   }
+
   return valid
 }
 
