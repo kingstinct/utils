@@ -11,7 +11,7 @@
     "lint-only": "eslint .",
     "typecheck": "npx tsc --noEmit",
     "lint": "concurrently \"pnpm lint-only\" \"pnpm typecheck\"",
-    "prepublishOnly": "concurrently \"pnpm build\" \"pnpm test\"",
+    "prepublishOnly": "pnpm build",
     "act-lint": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/lint.yml --reuse -e act-workflow-run-configs/lint.json",
     "act-typecheck": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/typecheck.yml --reuse -e act-workflow-run-configs/typecheck.json",
     "act-test-in-parallel": "act workflow_dispatch --container-architecture linux/amd64 -W .github/workflows/test-in-parallel.yml --reuse -e act-workflow-run-configs/test-in-parallel.json",
