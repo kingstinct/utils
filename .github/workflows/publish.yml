@@ -13,13 +13,13 @@ on:
         type: string
       release_type:
         description: Release Type
-        required: true
+        required: false
         default: patch
         type: string
     secrets:
       npm_token:
         required: true
-      GITHUB_TOKEN:
+      github-token:
         required: true
   workflow_dispatch:
     inputs:
@@ -58,7 +58,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
       - run: git push --follow-tags --no-verify
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          GITHUB_TOKEN: ${{secrets.github-token}}
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
