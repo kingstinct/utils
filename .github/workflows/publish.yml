@@ -5,6 +5,22 @@ name: NPM Publish
 run-name: ${{ inputs.description }} (${{ inputs.release_type }}) release by @${{ github.actor }}
 
 on:
+  workflow_call:
+    inputs:
+      description:
+        description: Description
+        required: false
+        type: string
+      release_type:
+        description: Release Type
+        required: true
+        default: patch
+        type: string
+    secrets:
+      npm_token:
+        required: true
+      GITHUB_TOKEN:
+        required: true
   workflow_dispatch:
     inputs:
       description:
@@ -22,11 +38,7 @@ on:
           - major
 
 jobs:
-  test:
-    uses: ./.github/workflows/test.yml
-
   publish-to-npm:
-    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
