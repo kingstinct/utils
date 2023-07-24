@@ -16,6 +16,11 @@ on:
         required: false
         default: patch
         type: string
+      package_manager:
+        description: Package Manager
+        required: false
+        default: pnpm
+        type: string
     secrets:
       npm_token:
         required: true
@@ -23,6 +28,15 @@ on:
         required: true
   workflow_dispatch:
     inputs:
+      package_manager:
+        description: Package Manager
+        required: true
+        default: pnpm
+        type: choice
+        options:
+          - pnpm
+          - npm
+          - yarn
       description:
         description: Description
         required: false
@@ -43,15 +57,20 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - uses: pnpm/action-setup@v2
+        if: ${{ github.event.inputs.package_manager == 'pnpm' }}
       - uses: actions/setup-node@v3
         with:
           node-version-file: .nvmrc
-          cache: pnpm
+          cache: ${{ github.event.inputs.package_manager }}
           registry-url: https://registry.npmjs.org/
           scope: "@kingstinct"
+
       - run: git config user.name "$(git log -n 1 --pretty=format:%an)"
       - run: git config user.email "$(git log -n 1 --pretty=format:%ae)"
-      - run: pnpm install --frozen-lockfile
+      - run: ${{ github.event.inputs.package_manager }} install --frozen-lockfile
+        if: ${{ github.event.inputs.package_manager != 'npm' }}
+      - run: npm ci
+        if: ${{ github.event.inputs.package_manager == 'npm' }}
       - run: echo "versionTag=`npm version ${{ github.event.inputs.release_type }} -m "%s ${{ github.event.inputs.description }}"`" >> $GITHUB_ENV
       - run: npm publish
         env:

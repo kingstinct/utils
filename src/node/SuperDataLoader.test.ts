@@ -1,8 +1,4 @@
-import DataLoader from 'dataloader'
-
 import createSuperDataLoader from './SuperDataLoader'
-import times from '../times'
-import wait from '../wait'
 
 describe('SuperDataLoader', () => {
   it('should be called multiple times', async () => {
