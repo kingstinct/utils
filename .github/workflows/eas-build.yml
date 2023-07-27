@@ -7,6 +7,11 @@ name: EAS Build
 on:
   workflow_call:
     inputs:
+      no_wait:
+        description: If the build should wait for the build to finish
+        required: false
+        default: true
+        type: boolean
       working_directory:
         type: string
         default: .
@@ -78,6 +83,9 @@ jobs:
   eas-build:
     timeout-minutes: 60
     runs-on: ubuntu-latest
+    outputs:
+      buildId: ${{ steps.buildId.outputs.buildId }}
+      buildUrl: ${{ steps.buildUrl.outputs.buildUrl }}
     env:
       EXPO_DEBUG: 1
       DEBUG: 1
@@ -158,26 +166,40 @@ jobs:
         run: echo "${{ secrets.GOOGLE_SERVICE_ACCOUNT_KEY_JSON }}" > ${{ inputs.google_service_account_key_path }}
 
       - name: EAS Build
-        if: ${{ inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        if: ${{ inputs.no_wait && inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
         run: |
           BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`
           echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - name: EAS Build
-        if: ${{ !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        if: ${{ inputs.no_wait && !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
         run: |
           BUILD_ID=`set -e; npx eas-cli@latest build --no-wait --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`
           echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
-      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/projects/${{ inputs.expo_app_slug }}/builds/${{ env.BUILD_ID }}"
-        id: build-url-with-app-slug
+      - name: EAS Build
+        if: ${{ !inputs.no_wait && inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        run: |
+          BUILD_ID=`set -e; npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --auto-submit --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: EAS Build
+        if: ${{ !inputs.no_wait && !inputs.autosubmit && (inputs.always_run || (env.MATCHING_IN_PROGRESS_BUILDS == 0 && env.MATCHING_FINISHED_BUILDS == 0 && env.MATCHING_IN_QUEUE_BUILDS == 0 && env.MATCHING_NEW_BUILDS == 0)) }}
+        run: |
+          BUILD_ID=`set -e; npx eas-cli@latest build --non-interactive --profile=${{ inputs.build_profile }} --platform ${{ inputs.platform }} --json | jq ".[].id"`
+          echo "BUILD_ID=${BUILD_ID}" >> $GITHUB_ENV
+        working-directory: ${{ inputs.working_directory }}
+
+      - run: echo "buildUrl=https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}/projects/${{ inputs.expo_app_slug }}/builds/${{ env.BUILD_ID }}" > "$GITHUB_OUTPUT"
+        id: buildUrl
         if: ${{ env.BUILD_ID && inputs.expo_app_slug }}
 
-      - run: echo "::set-output name=BUILD_URL::https://expo.dev/accounts/${{ inputs.expo_organisation_or_user_slug }}"
-        id: build-url
-        if: ${{ env.BUILD_ID && !inputs.expo_app_slug }}
+      - run: echo "buildId=${{ env.BUILD_ID }}" > "$GITHUB_OUTPUT"
+        id: buildId
+        if: ${{ env.BUILD_ID }}
 
       - name: Fail if no build was created when expected
         run: exit 1
