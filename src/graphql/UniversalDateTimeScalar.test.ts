@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc'
 import { GraphQLError } from 'graphql/error'
 import { Kind } from 'graphql/language'
 
-import { UniversalDateTime, getDayjsWithOffset } from './UniversalDateTimeScalar'
+import { UniversalDateTime } from './UniversalDateTimeScalar'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -84,59 +84,5 @@ describe('UniversalDateTime', () => {
     const date = parseLiteral({ value: '2019-11-01', kind: Kind.STRING }, {})
 
     expect(date).toBe(expected)
-  })
-})
-
-describe('getDayjsWithOffset', () => {
-  test('getDayjsWithOffset UTC', () => {
-    const dateStr = '2019-11-01T11:00:00Z'
-    const timestamp = new Date(dateStr).getTime()
-
-    const result = getDayjsWithOffset(dateStr)
-
-    expect(result.format()).toBe(dateStr)
-    expect(result.toISOString()).toBe(new Date(dateStr).toISOString())
-    expect(result.utcOffset()).toBe(0)
-    expect(result.valueOf()).toBe(timestamp)
-  })
-
-  test('getDayjsWithOffset with no timezone', () => {
-    const dateStr = '2019-11-01T11:00:00'
-    const timestamp = new Date(dateStr).getTime()
-
-    const localOffset = dayjs(dateStr).utcOffset() + 0
-
-    const result = getDayjsWithOffset(dateStr)
-
-    expect(result.toISOString()).toBe(new Date(dateStr).toISOString())
-    expect(result.utcOffset()).toBe(localOffset)
-    expect(result.valueOf()).toBe(timestamp)
-  })
-
-  test('getDayjsWithOffset with no timezone should be set based on default dayjs timezone', () => {
-    const dateStr = '2019-11-01T11:00:00'
-    const timestamp = new Date(dateStr).getTime()
-
-    const newYorkOffset = dayjs().tz('America/New_York').utcOffset()
-
-    dayjs.tz.setDefault('America/New_York')
-
-    const result = getDayjsWithOffset(dateStr)
-
-    expect(result.toISOString()).toBe(new Date(dateStr).toISOString())
-    expect(result.utcOffset()).toBe(newYorkOffset)
-    expect(result.valueOf()).toBe(timestamp)
-  })
-
-  test('getDayjsWithOffset with +05:00', () => {
-    const dateStr = '2019-11-01T11:00:00+05:00'
-    const timestamp = new Date(dateStr).getTime()
-
-    const result = getDayjsWithOffset(dateStr)
-
-    expect(result.format()).toBe(dateStr)
-    expect(result.toISOString()).toBe(new Date(dateStr).toISOString())
-    expect(result.utcOffset()).toBe(300)
-    expect(result.valueOf()).toBe(timestamp)
   })
 })
