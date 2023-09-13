@@ -4,7 +4,7 @@ import utc from 'dayjs/plugin/utc'
 import { GraphQLError } from 'graphql/error'
 import { Kind } from 'graphql/language'
 
-import { UniversalDateTime } from './UniversalDateTimeScalar'
+import { UniversalDateTime, isValidDayjs } from './UniversalDateTimeScalar'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -84,5 +84,13 @@ describe('UniversalDateTime', () => {
     const date = parseLiteral({ value: '2019-11-01', kind: Kind.STRING }, {})
 
     expect(date).toBe(expected)
+  })
+
+  test('parseLiteral should return dayjs', () => {
+    const expected = '2019-11-01T11:00:00Z'
+    const date = parseLiteral({ value: expected, kind: Kind.STRING }, {}) as dayjs.Dayjs
+
+    expect(date.valueOf()).toBe(new Date(expected).valueOf())
+    expect(date.isValid()).toBe(true)
   })
 })

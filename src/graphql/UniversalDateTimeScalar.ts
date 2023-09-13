@@ -59,7 +59,7 @@ export const UniversalDateTime = new GraphQLScalarType({
     if (typeof ast.value === 'string' && isValidDateString(ast.value)) {
       return ast.value
     } if (isValidDayjs(ast.value)) {
-      return ast.value
+      return stringToDayjs(ast.value)
     }
     throw new GraphQLError(`Require string on format YYYY-MM-DD or iso8601/dayjs valid string, found: ${ast.value}`)
   },
