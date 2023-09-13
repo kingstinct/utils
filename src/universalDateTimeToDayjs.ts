@@ -1,6 +1,11 @@
 import dayjs from 'dayjs'
+import tz from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
 
 import type { Dayjs } from 'dayjs'
+
+dayjs.extend(utc)
+dayjs.extend(tz)
 
 type UniversalDateTimeInterpretation = 'endOfDay' | 'startOfDay'
 

@@ -18,5 +18,6 @@ export * from './createKeyMap'
 export * from './dateRange'
 export * from './universalDateTimeToDayjs'
 export * from './statHelpers'
+export * from './onTimeout'
 
 export const isDefined = isNotNullOrUndefined
