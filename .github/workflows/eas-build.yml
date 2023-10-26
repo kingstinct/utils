@@ -109,7 +109,11 @@ jobs:
         with:
           version: ${{ inputs.pnpm_version }}
 
+      - uses: oven-sh/setup-bun@v1
+        if: ${{ inputs.package_manager == 'bun' }}
+
       - uses: actions/setup-node@v3
+        if: ${{ inputs.package_manager != 'bun' }}
         with:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
