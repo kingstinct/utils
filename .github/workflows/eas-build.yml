@@ -151,7 +151,7 @@ jobs:
 
       - name: Get Hash (bun)
         if: ${{ !inputs.always_run && inputs.package_manager == 'bun' }}
-        run: echo "HASH=`bunx expo-native-dependency-hash hash --force --platform=${{ inputs.platform }}` --nodeModulePaths=${{ inputs.nodeModulePaths }}" >> $GITHUB_ENV
+        run: echo "HASH=`bunx expo-native-dependency-hash hash --force --platform=${{ inputs.platform }} --nodeModulePaths=${{ inputs.nodeModulePaths }}`" >> $GITHUB_ENV
         working-directory: ${{ inputs.working_directory }}
 
       - name: Matching Native Builds
