@@ -1,4 +1,4 @@
-import { FindCursor, AbstractCursor } from 'mongodb'
+import { AbstractCursor } from 'mongodb'
 
 export const LOG_PREFIX = '[Timeoutify]'
 
@@ -39,7 +39,10 @@ export class Timeoutify {
 
     if (timeoutMS > 0) {
       this.handle = setTimeout(() => {
-        this.logger.debug(`${this.logPrefix} setTimeout called`)
+        if (process.env.DEBUG) {
+          this.logger.debug(`${this.logPrefix} setTimeout called`)
+        }
+
         if (!this.abortController.signal.aborted) {
           this.statusInternal = TimeoutifyStatus.TimedOut
           this.abortController.abort()
@@ -99,7 +102,9 @@ export class Timeoutify {
    * This ensures the MongoDB Operation is never running for longer than the timeout.
    * */
   async runMongoOpWithTimeout<T>(cursor: AbstractCursor<T>): Promise<readonly T[]> {
-    this.logger.debug(`${this.logPrefix} runMongoOpWithTimeout called`)
+    if (process.env.DEBUG) {
+      this.logger.debug(`${this.logPrefix} runMongoOpWithTimeout called`)
+    }
     if (this.status === TimeoutifyStatus.Aborted || this.status === TimeoutifyStatus.TimedOut) {
       throw new Error(`${this.logPrefix} runMongoOpWithTimeout: AbortSignal already aborted`)
     }
