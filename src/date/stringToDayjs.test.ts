@@ -37,7 +37,7 @@ describe('stringToDayjs', () => {
     const dateStr = '2019-11-01T11:00:00'
     const timestamp = new Date(dateStr).getTime()
 
-    const newYorkOffset = dayjs().tz('America/New_York').utcOffset()
+    const newYorkOffset = dayjs(dateStr).tz('America/New_York').utcOffset()
 
     dayjs.tz.setDefault('America/New_York')
 
