@@ -71,14 +71,19 @@ jobs:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
 
-      - name: Install dependencies
-        run: ${{ inputs.package_manager }} install --frozen-lockfile
-        if: ${{ inputs.package_manager != 'npm' }}
+      - name: Install dependencies (bun)
+        run: ${{ inputs.package_manager }} install --frozen-lockfile --concurrent-scripts 1
+        if: ${{ inputs.package_manager == 'bun' }}
         working-directory: ${{ inputs.working_directory }}
 
-      - name: Install dependencies
+      - name: Install dependencies (npm)
         run: npm ci
         if: ${{ inputs.package_manager == 'npm' }}
+        working-directory: ${{ inputs.working_directory }}
+
+      - name: Install dependencies (others)
+        run: ${{ inputs.package_manager }} install --frozen-lockfile
+        if: ${{ inputs.package_manager != 'npm' && inputs.package_manager != 'bun' }}
         working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
