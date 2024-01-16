@@ -60,7 +60,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "8"
+        default: '8'
         description: If using pnpm - which version to use
       nodeModulePaths:
         required: false
@@ -72,6 +72,11 @@ on:
         type: string
         default: ./google-service-account-key.json
         description: The path to the google-service-account-key.json file
+      bun_version:
+        required: false
+        type: string
+        default: 'latest'
+        description: Set bun version
     secrets:
       EXPO_TOKEN:
         description: The Expo token to use for publishing
@@ -116,6 +121,8 @@ jobs:
 
       - uses: oven-sh/setup-bun@v1
         if: ${{ inputs.package_manager == 'bun' }}
+        with:
+          bun-version: ${{ inputs.bun_version }}
 
       - uses: actions/setup-node@v3
         if: ${{ inputs.package_manager != 'bun' }}
