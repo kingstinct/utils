@@ -55,7 +55,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: '8'
+        default: "8"
         description: If using pnpm - which version to use
       google_service_account_key_path:
         required: false
@@ -65,7 +65,7 @@ on:
       bun_version:
         required: false
         type: string
-        default: 'latest'
+        default: latest
         description: Set bun version
     secrets:
       EXPO_TOKEN:

@@ -1,97 +1,84 @@
 import { isNotNullOrUndefined } from '..'
 
-export function parseEnvNumber<T extends number | undefined, TOptional extends boolean = false>(
+export function parseEnvNumber<
+  T extends number,
+  TDefault extends T | undefined
+>(
   prop: string,
-  opts?: { readonly defaultValue?: T, readonly optional?: TOptional},
+  defaultValue?: TDefault,
   env = process.env,
-): TOptional extends false ? number : (T extends number ? number : number | undefined) {
+): T | TDefault {
   const rawValue = env[prop]
   if (!rawValue) {
-    const defaultValue = opts?.defaultValue
     if (isNotNullOrUndefined(defaultValue)) {
-      return defaultValue as number
+      return defaultValue
     }
-
-    if (opts?.optional) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return undefined
-    }
-
-    throw new Error(`Environment variable "${prop}" is required`)
+    return undefined as TDefault
   }
   try {
-    return parseFloat(rawValue)
+    return parseFloat(rawValue) as T
   } catch (e) {
-    throw new Error(`Failed to parse environment variable "${prop}", expected number got "${rawValue}"`)
+    console.error(`Failed to parse environment variable "${prop}", expected number got "${rawValue}"`)
+    return undefined as TDefault
   }
 }
 
-export function parseEnvJSON<T extends unknown | undefined, TOptional extends boolean = false>(
+// todo [2024-02-01]: allow to only specify first type argument
+export function parseEnvJSON<
+  T,
+  TDefault extends T | undefined
+>(
   prop: string,
-  opts?: { readonly defaultValue?: T, readonly optional?: TOptional},
+  defaultValue?: TDefault,
   env = process.env,
-): TOptional extends false ? NonNullable<T> : (T extends undefined ? T : NonNullable<T>) {
+): T | TDefault {
   const rawValue = env[prop]
   if (!rawValue) {
-    const defaultValue = opts?.defaultValue
     if (isNotNullOrUndefined(defaultValue)) {
       // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       // @ts-ignore
       return defaultValue as NonNullable<T>
     }
-
-    if (opts?.optional) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return undefined
-    }
-
-    throw new Error(`Environment variable "${prop}" is required`)
+    return undefined as TDefault
   }
   try {
     return JSON.parse(rawValue)
   } catch (e) {
-    throw new Error(`Failed to parse environment variable "${prop}", expected JSON got "${rawValue}"`)
+    console.error(`Failed to parse environment variable "${prop}", expected JSON got "${rawValue}"`)
+    return undefined as TDefault
   }
 }
 
-export function parseEnvBoolean<T extends boolean | undefined, TOptional extends boolean = false>(
+export function parseEnvBoolean<T extends boolean, TDefault extends T | undefined>(
   prop: string,
-  opts?: { readonly defaultValue?: T, readonly optional?: TOptional},
+  defaultValue?: T,
   env = process.env,
-): TOptional extends false ? boolean : (T extends boolean ? boolean : boolean | undefined) {
+): T | TDefault {
   const rawValue = env[prop]
   if (!rawValue) {
-    const defaultValue = opts?.defaultValue
     if (isNotNullOrUndefined(defaultValue)) {
-      return defaultValue as boolean
+      return defaultValue
     }
-
-    if (opts?.optional) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      return undefined
-    }
-
-    throw new Error(`Environment variable "${prop}" is required`)
+    return undefined as TDefault
   }
   try {
     const value = JSON.parse(rawValue) as boolean
 
     if (typeof value !== 'boolean') {
       if (value === 1) {
-        return true
+        return true as T
       }
       if (value === 0) {
-        return false
+        return false as T
       }
-      throw new Error(`Failed to parse environment variable "${prop}", expected boolean got "${rawValue}"`)
+    } else {
+      return value as T
     }
 
-    return value
+    return defaultValue as TDefault
   } catch (e) {
-    throw new Error(`Failed to parse environment variable "${prop}", expected boolean got "${rawValue}"`)
+    console.error(`Failed to parse environment variable "${prop}", expected boolean got "${rawValue}"`)
+    return defaultValue as TDefault
   }
 }
 
@@ -99,14 +86,13 @@ type EnumOrArrayOfLiterals<T extends string> = ArrayLike<T> | { readonly [s: str
 
 export function parseEnvEnum<
   T extends string,
-  TOptional extends boolean = false,
-  TOpts extends { readonly defaultValue?: TOptional extends false ? NonNullable<T> : T | undefined, readonly optional?: TOptional} = { readonly defaultValue?: TOptional extends false ? NonNullable<T> : T | undefined, readonly optional?: TOptional}
+  TDefault extends T | undefined
 >(
   prop: string,
   validValues: EnumOrArrayOfLiterals<T>,
-  opts?: TOptional extends false ? Required<TOpts> : TOpts,
+  defaultValue?: TDefault,
   env = process.env,
-): TOptional extends false ? NonNullable<T> : T | undefined {
+): T | TDefault {
   const rawValue = env[prop]
 
   const enumOrArray = Object.values(validValues)
@@ -114,23 +100,12 @@ export function parseEnvEnum<
   const isPartOfEnumOrArray = rawValue ? enumOrArray.includes(rawValue) : false
 
   if (isPartOfEnumOrArray) {
-    return rawValue as NonNullable<T>
+    return rawValue as T & TDefault
   }
 
-  const defaultValue = opts?.defaultValue
   if (isNotNullOrUndefined(defaultValue) && enumOrArray.includes(defaultValue)) {
     return defaultValue
   }
 
-  if (opts?.optional) {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    return undefined
-  }
-
-  const error = rawValue
-    ? new Error(`Environment variable "${prop}" was "${rawValue}", should be one of [${enumOrArray.join(', ')}]`)
-    : new Error(`Environment variable "${prop}" is required`)
-
-  throw error
+  return undefined as unknown as T & TDefault
 }
