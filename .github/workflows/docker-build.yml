@@ -51,7 +51,7 @@ jobs:
           build-args: ${{ inputs.dockerBuildArgs || env.baseImage }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          tags: ${{ inputs.tags }}
+          tags: ${{ inputs.dockerImageTags }}
 
       - uses: sarisia/actions-status-discord@v1
         if: ${{ failure() && inputs.discordWebhook }}
