@@ -5,7 +5,7 @@ name: Docker Build
 on:
   workflow_call:
     secrets:
-      GITHUB_TOKEN:
+      github-token:
         required: true
     inputs:
       envFile:
@@ -38,7 +38,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.github-token }}
 
       - uses: docker/setup-buildx-action@v2
 
