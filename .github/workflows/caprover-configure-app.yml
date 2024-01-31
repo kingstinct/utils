@@ -48,12 +48,6 @@ on:
         default: 1
   workflow_dispatch:
     inputs:
-      instanceCount:
-        type: number
-        default: 1
-      containerHttpPort:
-        type: number
-        default: 80
       discordWebhook:
         required: false
         type: string
@@ -159,7 +153,7 @@ jobs:
           | echo "envVars=$json" >> $GITHUB_ENV
 
       - name: Update App Settings ⚙️
-        run: bunx caprover api --path=/user/apps/appDefinitions/update --method=POST --data='{ "appName":"${{ inputs.caproverAppName }}", "websocketSupport":${{ inputs.websocketSupport }}, "containerHttpPort":${{ inputs.containerHttpPort }}, "instanceCount":${{ inputs.instanceCount }}, "envVars":${{ env.envVars }} }'
+        run: bunx caprover api --path=/user/apps/appDefinitions/update --method=POST --data='{ "appName":"${{ inputs.caproverAppName }}", "websocketSupport":${{ inputs.websocketSupport }}, "containerHttpPort":${{ inputs.containerHttpPort || 80 }}, "instanceCount":${{ inputs.instanceCount || 1 }}, "envVars":${{ env.envVars }} }'
 
       - name: Enable SSL 🔒
         run: bunx caprover api --path=/user/apps/appDefinitions/enablebasedomainssl --method=POST --data='{"appName":"${{ inputs.caproverAppName }}"}'
