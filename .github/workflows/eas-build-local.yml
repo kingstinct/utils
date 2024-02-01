@@ -16,6 +16,11 @@ on:
         type: string
         description: Pass any environment variables to the publish command here, for passing to app.config.js. Could be "APP_ENV=staging MY_OTHER_VAR=hey" for example
         required: false
+      java_version:
+        type: string
+        description: The java version to use
+        required: false
+        default: "17"
       platform:
         type: string
         description: ios or android
@@ -100,6 +105,12 @@ jobs:
         if: ${{ inputs.checkout_ref }}
         with:
           ref: ${{ inputs.checkout_ref }}
+
+      # as required by expo 50
+      - uses: actions/setup-java@v4
+        with:
+          distribution: zulu
+          java-version: ${{ inputs.java_version }}
 
       - uses: pnpm/action-setup@v2
         if: ${{ inputs.package_manager == 'pnpm' }}

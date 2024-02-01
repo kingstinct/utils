@@ -49,17 +49,17 @@ export function parseEnvJSON<
   }
 }
 
-export function parseEnvBoolean<T extends boolean, TDefault extends T | undefined>(
+export function parseEnvBoolean<T extends boolean>(
   prop: string,
   defaultValue?: T,
   env = process.env,
-): T | TDefault {
+): T {
   const rawValue = env[prop]
   if (!rawValue) {
     if (isNotNullOrUndefined(defaultValue)) {
       return defaultValue
     }
-    return undefined as TDefault
+    return false as T
   }
   try {
     const value = JSON.parse(rawValue) as boolean
@@ -75,10 +75,10 @@ export function parseEnvBoolean<T extends boolean, TDefault extends T | undefine
       return value as T
     }
 
-    return defaultValue as TDefault
+    return defaultValue as T
   } catch (e) {
     console.error(`Failed to parse environment variable "${prop}", expected boolean got "${rawValue}"`)
-    return defaultValue as TDefault
+    return defaultValue ?? false as T
   }
 }
 
