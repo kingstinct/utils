@@ -87,7 +87,7 @@ on:
 jobs:
   eas-build:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: ${{ inputs.platform == 'android' && 'ubuntu-latest-8cores' || 'macos-latest-xl' }}
     env:
       EXPO_DEBUG: 1
       DEBUG: 1
