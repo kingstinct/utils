@@ -1,3 +1,5 @@
+⚠️ This repo has been moved to [Kingstinct/zemble](https://github.com/kingstinct/zemble/tree/main/packages/utils), and has been renamed to [`@zemble/utils`](https://www.npmjs.com/package/@zemble/utils).
+
 # @kingstinct/utils
 
 [![npm (scoped)](https://img.shields.io/npm/v/@kingstinct/utils?style=for-the-badge)](https://www.npmjs.com/package/@kingstinct/utils)
