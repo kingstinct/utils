@@ -23,7 +23,7 @@ export function parseEnvNumber<
   }
 }
 
-// todo [2025-03-01]: allow to only specify first type argument
+// todo [2027-03-01]: allow to only specify first type argument
 export function parseEnvJSON<
   T,
   TDefault extends T | undefined

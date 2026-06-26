@@ -37,8 +37,7 @@ on:
       pnpm_version:
         required: false
         type: string
-        default: "8"
-        description: If using pnpm - which version to use
+        description: If using pnpm - which version to use (defaults to the packageManager field in package.json)
     secrets:
       EXPO_TOKEN:
         required: true
@@ -59,14 +58,14 @@ jobs:
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
 
-      - uses: pnpm/action-setup@v2
+      - uses: pnpm/action-setup@0ebf47130e4866e96fce0953f49152a61190b271 # v6.0.9
         if: ${{ inputs.package_manager == 'pnpm' }}
         with:
           version: ${{ inputs.pnpm_version }}
 
-      - uses: actions/setup-node@v3
+      - uses: actions/setup-node@48b55a011bda9f5d6aeb4c2d9c7362e8dae4041e # v6.4.0
         with:
           node-version-file: .nvmrc
           cache: ${{ inputs.package_manager }}
@@ -87,7 +86,7 @@ jobs:
         working-directory: ${{ inputs.working_directory }}
 
       - name: Expo GitHub Action
-        uses: expo/expo-github-action@v8
+        uses: expo/expo-github-action@eab7a230208c952974db8c3245cfd78402c7b385 # 9.0.0
         with:
           # Your Expo username, for authentication.
           token: ${{ secrets.EXPO_TOKEN }}
@@ -98,7 +97,7 @@ jobs:
 
       - name: Find Metro cache
         id: metro-cache-dir-path
-        uses: actions/github-script@v4
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
         with:
           result-encoding: string
           script: |
@@ -107,7 +106,7 @@ jobs:
             return path.join(os.tmpdir(), 'metro-cache');
 
       - name: Restore Metro cache
-        uses: actions/cache@v2
+        uses: actions/cache@2c8a9bd7457de244a408f35966fab2fb45fda9c8 # v6.0.0
         with:
           path: ${{ steps.metro-cache-dir-path.outputs.result }}
           key: ${{ runner.os }}-metro-cache-${{ matrix.app }}-${{ github.ref }}
@@ -123,7 +122,7 @@ jobs:
           SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
           SENTRY_DEPLOY_ENV: ${{ inputs.expo_release_channel }}
 
-      - uses: marocchino/sticky-pull-request-comment@v2
+      - uses: marocchino/sticky-pull-request-comment@0ea0beb66eb9baf113663a64ec522f60e49231c0 # v3.0.4
         with:
           recreate: true
           message: |
